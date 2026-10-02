@@ -1,0 +1,441 @@
+// ============================================================
+// הקופה הלאומית — Data model
+// Dev: SQLite (Prisma 6). Prod: Postgres (same schema, swap provider)
+// Money is stored as INTEGER in agorot (1 ILS = 100 agorot).
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- System / config ----------
+
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model Role {
+  id          String      @id @default(cuid())
+  code        String      @unique
+  nameHe      String
+  permissions String      @default("[]")
+  createdAt   DateTime    @default(now())
+  users       AdminUser[]
+}
+
+model AdminUser {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  name         String
+  passwordHash String
+  roleId       String?
+  role         Role?      @relation(fields: [roleId], references: [id])
+  active       Boolean    @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  auditLogs    AuditLog[]
+}
+
+model User {
+  id        String     @id @default(cuid())
+  email     String?    @unique
+  name      String?
+  createdAt DateTime   @default(now())
+  donations Donation[]
+}
+
+// ---------- Funds / causes / campaigns ----------
+
+model FundType {
+  code                   String                @id
+  nameHe                 String
+  description            String?
+  halachicClassification String
+  sortOrder              Int                   @default(0)
+  active                 Boolean               @default(true)
+  publicVisible          Boolean               @default(true)
+  minAmount              Int?
+  suggestedAmounts       String                @default("[]")
+  receiptRequired        Boolean               @default(true)
+  anonymousAllowed       Boolean               @default(true)
+  createdAt              DateTime              @default(now())
+  updatedAt              DateTime              @updatedAt
+  donations              Donation[]
+  allocations            Allocation[]
+  rules                  FundRule[]
+  destinations           FundTypeDestination[]
+}
+
+model Cause {
+  id            String               @id @default(cuid())
+  slug          String               @unique
+  nameHe        String
+  summary       String?
+  description   String?
+  category      String
+  imageUrl      String?
+  active        Boolean              @default(true)
+  publicVisible Boolean              @default(true)
+  sortOrder     Int                  @default(0)
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+  donations     Donation[]
+  allocations   Allocation[]
+  campaigns     Campaign[]
+  destinations  FundTypeDestination[]
+  qrCodes       QrCode[]
+}
+
+model Campaign {
+  id            String     @id @default(cuid())
+  slug          String     @unique
+  nameHe        String
+  summary       String?
+  description   String?
+  causeId       String?
+  cause         Cause?     @relation(fields: [causeId], references: [id])
+  goalAmount    Int?
+  startsAt      DateTime?
+  endsAt        DateTime?
+  active        Boolean    @default(true)
+  publicVisible Boolean    @default(true)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  donations     Donation[]
+  qrCodes       QrCode[]
+}
+
+// Which causes a fund type may be allocated to, and with what priority.
+model FundTypeDestination {
+  id           String   @id @default(cuid())
+  fundTypeCode String
+  fundType     FundType @relation(fields: [fundTypeCode], references: [code])
+  causeId      String
+  cause        Cause    @relation(fields: [causeId], references: [id])
+  allowed      Boolean  @default(true)
+  priority     Int      @default(0)
+  conditions   String   @default("{}")
+  createdAt    DateTime @default(now())
+
+  @@unique([fundTypeCode, causeId])
+}
+
+// ---------- Allocation engine ----------
+
+model FundRule {
+  id             String       @id @default(cuid())
+  code           String       @unique
+  fundTypeCode   String?
+  fundType       FundType?    @relation(fields: [fundTypeCode], references: [code])
+  condition      String       @default("{}")
+  decision       String
+  priority       Int          @default(100)
+  halachicRuleId String?
+  halachicRule   HalachicRule? @relation(fields: [halachicRuleId], references: [id])
+  status         String       @default("active")
+  version        Int          @default(1)
+  effectiveFrom  DateTime     @default(now())
+  effectiveTo    DateTime?
+  note           String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  allocations    Allocation[]
+}
+
+model Allocation {
+  id          String    @id @default(cuid())
+  donationId  String
+  donation    Donation  @relation(fields: [donationId], references: [id])
+  fundTypeCode String
+  fundType    FundType  @relation(fields: [fundTypeCode], references: [code])
+  causeId     String?
+  cause       Cause?    @relation(fields: [causeId], references: [id])
+  amount      Int
+  currency    String    @default("ILS")
+  ruleCode    String?
+  fundRuleId  String?
+  fundRule    FundRule? @relation(fields: [fundRuleId], references: [id])
+  ruleVersion Int?
+  rationale   String?
+  createdAt   DateTime  @default(now())
+}
+
+// ---------- Donations / payments ----------
+
+model Donation {
+  id               String         @id @default(cuid())
+  publicId         String         @unique
+  fundTypeCode     String
+  fundType         FundType       @relation(fields: [fundTypeCode], references: [code])
+  causeId          String?
+  cause            Cause?         @relation(fields: [causeId], references: [id])
+  campaignId       String?
+  campaign         Campaign?      @relation(fields: [campaignId], references: [id])
+  userId           String?
+  user             User?          @relation(fields: [userId], references: [id])
+  amount           Int
+  currency         String         @default("ILS")
+  status           String         @default("pending")
+  donorName        String?
+  donorEmail       String?
+  donorPhone       String?
+  anonymous        Boolean        @default(false)
+  designation      String?
+  dedication       String?
+  discreetMode     Boolean        @default(false)
+  source           String?
+  qrId             String?
+  qrCode           QrCode?        @relation(fields: [qrId], references: [id])
+  provider         String?
+  providerRef      String?
+  recurringPlanId  String?
+  recurringPlan    RecurringPlan? @relation(fields: [recurringPlanId], references: [id])
+  paidAt           DateTime?
+  metadata         String         @default("{}")
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  transactions     Transaction[]
+  allocations      Allocation[]
+  receipt          Receipt?
+
+  @@index([fundTypeCode])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Transaction {
+  id          String    @id @default(cuid())
+  donationId  String?
+  donation    Donation? @relation(fields: [donationId], references: [id])
+  provider    String
+  providerRef String?
+  type        String
+  amount      Int
+  currency    String    @default("ILS")
+  status      String
+  rawStatus   String?
+  metadata    String    @default("{}")
+  createdAt   DateTime  @default(now())
+
+  @@index([donationId])
+  @@index([providerRef])
+}
+
+model Receipt {
+  id          String   @id @default(cuid())
+  number      String   @unique
+  donationId  String   @unique
+  donation    Donation @relation(fields: [donationId], references: [id])
+  amount      Int
+  currency    String   @default("ILS")
+  donorName   String?
+  issuedAt    DateTime @default(now())
+  status      String   @default("issued")
+  externalRef String?
+  metadata    String   @default("{}")
+}
+
+model PaymentToken {
+  id          String   @id @default(cuid())
+  provider    String
+  tokenRef    String   @unique
+  last4       String?
+  brand       String?
+  expiryMonth Int?
+  expiryYear  Int?
+  adminUserId String?
+  createdAt   DateTime @default(now())
+}
+
+model RecurringPlan {
+  id           String     @id @default(cuid())
+  provider     String
+  tokenRef     String?
+  amount       Int
+  currency     String     @default("ILS")
+  interval     String     @default("monthly")
+  status       String     @default("active")
+  nextChargeAt DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  donations    Donation[]
+}
+
+// ---------- Halachic rules engine ----------
+
+model HalachicSource {
+  id         String              @id @default(cuid())
+  code       String              @unique
+  title      String
+  work       String?
+  author     String?
+  citation   String?
+  quote      String?
+  paraphrase String?
+  url        String?
+  sourceType String              @default("primary")
+  tradition  String              @default("general")
+  createdAt  DateTime            @default(now())
+  rules      HalachicRuleSource[]
+}
+
+model HalachicRule {
+  id               String                @id @default(cuid())
+  code             String                @unique
+  topic            String
+  subtopic         String?
+  condition        String                @default("{}")
+  decision         String
+  publicExplanation String
+  internalReasoning String?
+  confidence       String                @default("provisional")
+  status           String                @default("needs_review")
+  lastReviewedAt   DateTime?
+  reviewer         String?
+  currentVersion   Int                   @default(1)
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+  sources          HalachicRuleSource[]
+  versions         HalachicRuleVersion[]
+  fundRules        FundRule[]
+}
+
+model HalachicRuleSource {
+  id       String         @id @default(cuid())
+  ruleId   String
+  rule     HalachicRule   @relation(fields: [ruleId], references: [id])
+  sourceId String
+  source   HalachicSource @relation(fields: [sourceId], references: [id])
+  role     String         @default("supporting")
+
+  @@unique([ruleId, sourceId])
+}
+
+model HalachicRuleVersion {
+  id                String       @id @default(cuid())
+  ruleId            String
+  rule              HalachicRule @relation(fields: [ruleId], references: [id])
+  version           Int
+  decision          String
+  publicExplanation String
+  internalReasoning String?
+  status            String
+  confidence        String
+  reason            String?
+  author            String?
+  createdAt         DateTime     @default(now())
+
+  @@unique([ruleId, version])
+}
+
+// ---------- QR / redirects ----------
+
+model QrCode {
+  id            String     @id @default(cuid())
+  code          String     @unique
+  slug          String     @unique
+  destination   String
+  campaignId    String?
+  campaign      Campaign?  @relation(fields: [campaignId], references: [id])
+  causeId       String?
+  cause         Cause?     @relation(fields: [causeId], references: [id])
+  source        String?
+  scanCount     Int        @default(0)
+  active        Boolean    @default(true)
+  redirectRules String     @default("[]")
+  createdBy     String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  donations     Donation[]
+}
+
+model Redirect {
+  id         String   @id @default(cuid())
+  fromPath   String   @unique
+  toPath     String
+  statusCode Int      @default(302)
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+}
+
+// ---------- Content ----------
+
+model Page {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  body      String
+  format    String   @default("markdown")
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Article {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  title       String
+  excerpt     String?
+  body        String
+  category    String
+  published   Boolean   @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Faq {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  question  String
+  answer    String
+  category  String   @default("general")
+  sortOrder Int      @default(0)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ---------- Analytics / audit (privacy-first) ----------
+
+model AnalyticsEvent {
+  id           String   @id @default(cuid())
+  type         String
+  path         String?
+  fundTypeCode String?
+  causeId      String?
+  campaignId   String?
+  qrId         String?
+  sessionHash  String?
+  discreet     Boolean  @default(false)
+  meta         String   @default("{}")
+  createdAt    DateTime @default(now())
+
+  @@index([type])
+  @@index([createdAt])
+}
+
+model AuditLog {
+  id        String     @id @default(cuid())
+  actorId   String?
+  actor     AdminUser? @relation(fields: [actorId], references: [id])
+  action    String
+  entity    String
+  entityId  String?
+  before    String?
+  after     String?
+  ip        String?
+  userAgent String?
+  createdAt DateTime   @default(now())
+
+  @@index([entity, entityId])
+  @@index([createdAt])
+}

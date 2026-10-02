@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="הקופה הלאומית">
+  <rect width="64" height="64" rx="14" fill="#0f4c46"/>
+  <circle cx="32" cy="34" r="15" fill="none" stroke="#f6f3ea" stroke-width="3"/>
+  <path d="M32 19c3.4 4.2 5.4 6.9 5.4 10.4a5.4 5.4 0 0 1-10.8 0C26.6 25.9 28.6 23.2 32 19z" fill="#a9822b"/>
+  <rect x="24" y="44" width="16" height="3" rx="1.5" fill="#f6f3ea"/>
+</svg>

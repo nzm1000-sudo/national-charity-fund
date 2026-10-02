@@ -1,0 +1,159 @@
+@import "tailwindcss";
+
+/* ============================================================
+   הקופה הלאומית — Design tokens
+   Direction: Jewish, Israeli, clean, quietly dignified, warm,
+   discreet, stable, modern. Sanctity without heaviness.
+   Deliberately avoids: purple gradients, glow, glassmorphism,
+   pill-shaped everything, hero with empty filler text.
+   ============================================================ */
+
+@theme {
+  /* Surfaces — warm parchment, not cold white */
+  --color-parchment: #f6f3ea;
+  --color-parchment-deep: #efeadd;
+  --color-surface: #ffffff;
+  --color-surface-2: #faf8f2;
+
+  /* Ink — warm near-black, never pure #000 */
+  --color-ink: #1a1814;
+  --color-ink-soft: #454034;
+  --color-muted: #79715f;
+
+  /* Lines */
+  --color-border: #e3dccb;
+  --color-border-strong: #cfc6ae;
+
+  /* Primary — deep teal: trust + rootedness, not generic SaaS blue */
+  --color-primary: #0f4c46;
+  --color-primary-strong: #0a3733;
+  --color-primary-soft: #e5efec;
+  --color-primary-tint: #f1f7f5;
+
+  /* Accent — restrained antique gold for dignity */
+  --color-gold: #a9822b;
+  --color-gold-soft: #f3e8cf;
+
+  /* Feedback */
+  --color-danger: #8c2f2f;
+  --color-danger-soft: #f7e7e4;
+  --color-success: #1f6b4a;
+  --color-success-soft: #e6f1ea;
+
+  /* Focus ring */
+  --color-focus: #1c6f66;
+
+  /* Typography */
+  --font-sans: var(--font-assistant), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  --font-display: var(--font-frank-ruhl), "Times New Roman", serif;
+
+  /* Radii — measured, not bubbly */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-card: 14px;
+  --radius-lg: 20px;
+
+  /* Shadows — soft and few */
+  --shadow-hair: 0 1px 2px rgba(26, 24, 20, 0.04);
+  --shadow-card: 0 1px 2px rgba(26, 24, 20, 0.04),
+    0 8px 24px -18px rgba(26, 24, 20, 0.35);
+  --shadow-raised: 0 2px 4px rgba(26, 24, 20, 0.05),
+    0 18px 40px -24px rgba(26, 24, 20, 0.4);
+
+  /* Motion */
+  --ease-out-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-parchment);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100dvh;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--color-gold-soft);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Numerals, phone numbers and amounts stay LTR-correct inside RTL text */
+  .num {
+    font-variant-numeric: tabular-nums;
+    unicode-bidi: isolate;
+    direction: ltr;
+    display: inline-block;
+  }
+
+  [dir="rtl"] input[type="tel"],
+  [dir="rtl"] input[type="email"],
+  [dir="rtl"] input[type="number"] {
+    direction: ltr;
+    text-align: start;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .container-page {
+    width: 100%;
+    max-width: 68rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  .hairline {
+    border-color: var(--color-border);
+  }
+
+  /* A calm, ruled section divider with a small gold tick */
+  .rule-gold::before {
+    content: "";
+    display: block;
+    width: 2.75rem;
+    height: 2px;
+    background: var(--color-gold);
+    margin-block-end: 0.9rem;
+    opacity: 0.7;
+  }
+}
