@@ -2,8 +2,6 @@
 
 import { useSyncExternalStore } from "react";
 import { isDiscreetEnabled, setDiscreet } from "@/lib/discreet";
-import { IconLock } from "@/components/icons";
-import { cn } from "@/lib/cn";
 
 function subscribe(callback: () => void) {
   window.addEventListener("discreet-change", callback);
@@ -18,16 +16,10 @@ export function DiscreetToggle() {
       type="button"
       onClick={() => setDiscreet(!on)}
       aria-pressed={on}
-      className={cn(
-        "inline-flex min-h-11 items-center gap-2 rounded-full border px-3 text-[var(--text-caption)] transition-colors duration-150",
-        on
-          ? "border-[var(--color-accent)] bg-[var(--color-primary-tint)] text-[var(--color-accent)]"
-          : "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:text-[var(--color-accent)]",
-      )}
-      title="מצב דיסקרטי: ערכה כהה, בלי אנימציות, בלי analytics וללא cookies שיווקיים"
+      className="privacy-control whitespace-nowrap"
+      title="מצב צנעה, ללא מעקב וללא תנועה"
     >
-      <IconLock width={16} height={16} />
-      <span className="hidden sm:inline">{on ? "דיסקרטי פעיל" : "מצב דיסקרטי"}</span>
+      מצב צנעה{on ? " · פעיל" : ""}
     </button>
   );
 }

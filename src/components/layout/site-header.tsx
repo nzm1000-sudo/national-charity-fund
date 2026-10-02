@@ -3,116 +3,37 @@
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/cn";
-import { ButtonLink } from "@/components/ui/button";
-import { DiscreetToggle } from "@/components/layout/discreet-toggle";
-import { ThemeToggle } from "@/components/layout/theme-toggle";
-import { LogoWordmark } from "@/components/brand/logo";
+import { Emblem } from "./Emblem";
+import { DiscreetToggle } from "./discreet-toggle";
 
 const NAV = [
-  { href: "/hashavat-mamon", label: "השבת ממון" },
-  { href: "/tzrachei-rabim", label: "צרכי רבים" },
-  { href: "/maaser", label: "מעשר" },
-  { href: "/tzedakah", label: "צדקה" },
-  { href: "/pidyon", label: "פדיון נפש" },
-  { href: "/where-the-money-goes", label: "לאן הכסף מגיע" },
-  { href: "/faq", label: "שאלות" },
+  ["/hashavat-mamon", "השבת ממון"], ["/tzrachei-rabim", "צרכי רבים"],
+  ["/maaser", "מעשר כספים"], ["/tzedakah", "צדקה"], ["/pidyon", "פדיון נפש"],
+  ["/where-the-money-goes", "לאן מגיעה התרומה"], ["/faq", "שאלות ותשובות"],
 ];
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--color-border)] bg-[var(--color-bg)]/85 backdrop-blur-md">
-      <div className="container-page flex h-20 items-center justify-between gap-4">
-        <Link href="/" aria-label="הקופה הלאומית — דף הבית" className="shrink-0">
-          <LogoWordmark size={38} />
+    <header className="border-b border-border bg-parchment">
+      <div className="container-page flex min-h-20 items-center justify-between gap-4">
+        <Link href="/" aria-label="הקופה הלאומית, לדף הבית" className="flex shrink-0 items-center gap-3 no-underline">
+          <Emblem size={32} />
+          <span className="font-display text-xl">הקופה הלאומית</span>
         </Link>
-
-        <nav aria-label="ניווט ראשי" className="hidden lg:block">
-          <ul className="flex items-center gap-1">
-            {NAV.map((item) => {
-              const active = pathname === item.href;
-              return (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    aria-current={active ? "page" : undefined}
-                    className={cn(
-                      "whitespace-nowrap rounded-full px-3 py-2 text-[var(--text-meta)] transition-colors duration-150",
-                      active
-                        ? "text-[var(--color-accent)]"
-                        : "text-[var(--color-text-muted)] hover:text-[var(--color-accent)]",
-                    )}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+        <nav aria-label="ניווט ראשי" className="hidden min-[1200px]:block">
+          <ul className="flex items-center gap-4">{NAV.map(([href, label]) => <li key={href}><Link href={href} aria-current={pathname === href ? "page" : undefined} className="site-nav-link">{label}</Link></li>)}</ul>
         </nav>
-
-        <div className="flex items-center gap-2">
-          <span className="hidden xl:inline-flex">
-            <ThemeToggle />
-          </span>
-          <span className="hidden md:inline-flex">
-            <DiscreetToggle />
-          </span>
-          <ButtonLink href="/tzedakah" size="sm" className="hidden sm:inline-flex">
-            לתרום
-          </ButtonLink>
-          <button
-            type="button"
-            className="lg:hidden inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--color-border)] text-[var(--color-text-muted)]"
-            aria-expanded={open}
-            aria-controls="mobile-nav"
-            aria-label={open ? "סגירת תפריט" : "פתיחת תפריט"}
-            onClick={() => setOpen((v) => !v)}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden>
-              {open ? (
-                <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
-              ) : (
-                <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
-              )}
-            </svg>
-          </button>
+        <div className="flex items-center gap-3">
+          <span className="hidden sm:block"><DiscreetToggle /></span>
+          <button type="button" aria-expanded={open} aria-controls="mobile-nav" onClick={() => setOpen(!open)} className="privacy-control min-[1200px]:hidden">תפריט</button>
         </div>
       </div>
-
-      {open && (
-        <nav
-          id="mobile-nav"
-          aria-label="ניווט ראשי (נייד)"
-          className="lg:hidden border-t border-[var(--color-border)] bg-[var(--color-surface)]"
-        >
-          <ul className="container-page flex flex-col py-2">
-            {NAV.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className="block rounded-[var(--radius-sm)] px-3 py-3 text-[var(--text-base)] text-[var(--color-text-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-accent)]"
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-            <li className="flex items-center justify-between gap-3 px-3 pb-2 pt-3">
-              <ThemeToggle />
-              <DiscreetToggle />
-            </li>
-            <li className="p-3">
-              <ButtonLink href="/tzedakah" fullWidth onClick={() => setOpen(false)}>
-                לתרום
-              </ButtonLink>
-            </li>
-          </ul>
-        </nav>
-      )}
+      {open && <nav id="mobile-nav" aria-label="ניווט בנייד" className="container-page border-t border-border pb-6 min-[1200px]:hidden">
+        <ul className="grid">{NAV.map(([href, label]) => <li key={href}><Link href={href} onClick={() => setOpen(false)} className="flex min-h-12 items-center text-base text-ink">{label}</Link></li>)}</ul>
+        <div className="mt-4 sm:hidden"><DiscreetToggle /></div>
+      </nav>}
     </header>
   );
 }
