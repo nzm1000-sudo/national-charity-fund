@@ -7,22 +7,16 @@ import { DonationForm } from "@/components/flows/donation-form";
 import { HalachaNote } from "@/components/flows/halacha-note";
 import { Card, CardBody } from "@/components/ui/card";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "מעשר כספים",
   description: "להפריש מעשר מההכנסה — עם מחשבון, מטרה ורצף לאורך זמן.",
 };
 
-export default async function MaaserPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}) {
+export default async function MaaserPage() {
   const fund = await getFundContext("maaser");
   if (!fund) notFound();
-  const sp = await searchParams;
-  const source = typeof sp.src === "string" ? sp.src : undefined;
 
   return (
     <FlowShell
@@ -38,13 +32,7 @@ export default async function MaaserPage({
         </Card>
       }
     >
-      <DonationForm
-        fund={toFormFund(fund)}
-        mode="maaser"
-        showCause
-        showMaaserCalc
-        source={source}
-      />
+      <DonationForm fund={toFormFund(fund)} mode="maaser" showCause showMaaserCalc />
     </FlowShell>
   );
 }

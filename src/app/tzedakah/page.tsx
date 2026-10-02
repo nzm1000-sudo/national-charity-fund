@@ -7,22 +7,16 @@ import { DonationForm } from "@/components/flows/donation-form";
 import { HalachaNote } from "@/components/flows/halacha-note";
 import { Card, CardBody } from "@/components/ui/card";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "צדקה",
   description: "לתת צדקה לפי היכולת, למטרה שתבחרו — בדיסקרטיות.",
 };
 
-export default async function TzedakahPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}) {
+export default async function TzedakahPage() {
   const fund = await getFundContext("tzedakah");
   if (!fund) notFound();
-  const sp = await searchParams;
-  const source = typeof sp.src === "string" ? sp.src : undefined;
 
   return (
     <FlowShell
@@ -38,12 +32,7 @@ export default async function TzedakahPage({
         </Card>
       }
     >
-      <DonationForm
-        fund={toFormFund(fund)}
-        mode="tzedakah"
-        showCause
-        source={source}
-      />
+      <DonationForm fund={toFormFund(fund)} mode="tzedakah" showCause />
     </FlowShell>
   );
 }

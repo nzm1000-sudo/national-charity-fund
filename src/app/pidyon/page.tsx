@@ -7,22 +7,16 @@ import { DonationForm } from "@/components/flows/donation-form";
 import { HalachaNote } from "@/components/flows/halacha-note";
 import { Card, CardBody } from "@/components/ui/card";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "פדיון נפש",
   description: "פדיון נפש כמנהג ישראל — עם שם ושם אם ונוסח מתאים.",
 };
 
-export default async function PidyonPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}) {
+export default async function PidyonPage() {
   const fund = await getFundContext("pidyon_nefesh");
   if (!fund) notFound();
-  const sp = await searchParams;
-  const source = typeof sp.src === "string" ? sp.src : undefined;
 
   return (
     <FlowShell
@@ -38,13 +32,7 @@ export default async function PidyonPage({
         </Card>
       }
     >
-      <DonationForm
-        fund={toFormFund(fund)}
-        mode="pidyon"
-        showCause
-        showPidyon
-        source={source}
-      />
+      <DonationForm fund={toFormFund(fund)} mode="pidyon" showCause showPidyon />
     </FlowShell>
   );
 }

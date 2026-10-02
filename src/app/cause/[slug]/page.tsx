@@ -2,11 +2,20 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getCauseBySlug, getFundContext } from "@/server/funds";
 import { toFormFund } from "@/server/fund-form";
+import { prisma } from "@/lib/prisma";
 import { FlowShell } from "@/components/flows/flow-shell";
 import { DonationForm } from "@/components/flows/donation-form";
 import { Card, CardBody } from "@/components/ui/card";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
+
+/** Pre-render one page per public cause (also required by static export). */
+export async function generateStaticParams() {
+  const causes = await prisma.cause
+    .findMany({ where: { publicVisible: true, active: true }, select: { slug: true } })
+    .catch(() => []);
+  return causes.map((c) => ({ slug: c.slug }));
+}
 
 export async function generateMetadata({
   params,
@@ -21,20 +30,15 @@ export async function generateMetadata({
 
 export default async function CausePage({
   params,
-  searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { slug } = await params;
-  const sp = await searchParams;
   const [cause, fund] = await Promise.all([
     getCauseBySlug(slug),
     getFundContext("tzedakah"),
   ]);
   if (!cause || !fund) notFound();
-
-  const source = typeof sp.src === "string" ? sp.src : undefined;
 
   return (
     <FlowShell
@@ -53,13 +57,7 @@ export default async function CausePage({
         </Card>
       }
     >
-      <DonationForm
-        fund={toFormFund(fund)}
-        mode="tzedakah"
-        showCause
-        defaultCauseSlug={slug}
-        source={source}
-      />
+      <DonationForm fund={toFormFund(fund)} mode="tzedakah" showCause defaultCauseSlug={slug} />
     </FlowShell>
   );
 }

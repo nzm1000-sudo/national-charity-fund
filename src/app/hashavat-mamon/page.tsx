@@ -7,7 +7,7 @@ import { RestitutionWizard } from "@/components/flows/restitution-wizard";
 import { HalachaNote } from "@/components/flows/halacha-note";
 import { Card, CardBody } from "@/components/ui/card";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "השבת ממון",

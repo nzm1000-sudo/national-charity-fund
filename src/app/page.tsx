@@ -10,7 +10,7 @@ import { Card, CardBody } from "@/components/ui/card";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { Disclosure } from "@/components/ui/disclosure";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export default async function HomePage() {
   const [faqs, causes] = await Promise.all([

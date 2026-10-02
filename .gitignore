@@ -11,6 +11,9 @@ next-env.d.ts
 # Production
 /build
 
+# Static Pages build scratch
+/.pages-exclude
+
 # Misc
 .DS_Store
 *.pem

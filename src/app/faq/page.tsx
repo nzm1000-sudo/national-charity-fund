@@ -4,7 +4,7 @@ import { Section, SectionHeading } from "@/components/ui/section";
 import { Disclosure } from "@/components/ui/disclosure";
 import { ButtonLink } from "@/components/ui/button";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 600;
 
 export const metadata: Metadata = {
   title: "שאלות נפוצות",

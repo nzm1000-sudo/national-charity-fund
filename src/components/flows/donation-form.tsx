@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { AmountPicker } from "@/components/ui/amount-picker";
 import { Button } from "@/components/ui/button";
 import { Field, Input, Textarea, Label } from "@/components/ui/form";
+import { Card, CardBody } from "@/components/ui/card";
+import { IconCheck } from "@/components/icons";
 import { formatILS, parseAmountToAgorot } from "@/lib/money";
 import { trackClient } from "@/lib/client-analytics";
 
@@ -25,21 +27,31 @@ export interface DonationFormProps {
   showPidyon?: boolean;
   showMaaserCalc?: boolean;
   defaultCauseSlug?: string;
-  source?: string;
   qrId?: string;
 }
 
-export function DonationForm({
+const STATIC_DEMO = process.env.NEXT_PUBLIC_STATIC_DEMO === "1";
+
+export function DonationForm(props: DonationFormProps) {
+  return (
+    <Suspense fallback={<div className="h-40 animate-pulse rounded-card bg-surface-2" />}>
+      <DonationFormInner {...props} />
+    </Suspense>
+  );
+}
+
+function DonationFormInner({
   fund,
   mode = "tzedakah",
   showCause = true,
   showPidyon = false,
   showMaaserCalc = false,
   defaultCauseSlug,
-  source,
   qrId,
 }: DonationFormProps) {
   const router = useRouter();
+  const source = useSearchParams().get("src") ?? undefined;
+
   const [amount, setAmount] = useState<number | null>(null);
   const [causeId, setCauseId] = useState<string>(
     fund.destinations.find((d) => d.slug === defaultCauseSlug)?.causeId ??
@@ -58,6 +70,7 @@ export function DonationForm({
   const [pRequest, setPRequest] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [done, setDone] = useState(false);
 
   useEffect(() => {
     trackClient("donation_started", { fundTypeCode: fund.code }, discreet);
@@ -70,6 +83,14 @@ export function DonationForm({
     if (!canSubmit || amount == null) return;
     setSubmitting(true);
     setError(null);
+
+    if (STATIC_DEMO) {
+      // Static GitHub Pages preview: no server, so we show the completion state.
+      setSubmitting(false);
+      setDone(true);
+      return;
+    }
+
     try {
       const res = await fetch("/api/donations", {
         method: "POST",
@@ -107,6 +128,32 @@ export function DonationForm({
       setError("בעיית תקשורת. בדקו את החיבור ונסו שוב — לא חויבתם.");
       setSubmitting(false);
     }
+  }
+
+  if (done) {
+    return (
+      <Card className="border-success/40">
+        <CardBody>
+          <span className="grid h-12 w-12 place-items-center rounded-full bg-success-soft text-success">
+            <IconCheck />
+          </span>
+          <h2 className="mt-4 font-display text-2xl">הפעולה הושלמה בהצלחה</h2>
+          <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">
+            זו תצוגה מקדימה (GitHub Pages) — לא בוצע חיוב אמיתי. באתר החי תועבר/י
+            לסליקה מאובטחת ותופק קבלה.
+          </p>
+          <dl className="mt-4 border-t border-border pt-4 text-sm">
+            <div className="flex justify-between">
+              <dt className="text-muted">סכום</dt>
+              <dd className="font-medium">{amount != null ? formatILS(amount) : "—"}</dd>
+            </div>
+          </dl>
+          <Button variant="secondary" className="mt-4" onClick={() => setDone(false)}>
+            חזרה לטופס
+          </Button>
+        </CardBody>
+      </Card>
+    );
   }
 
   return (

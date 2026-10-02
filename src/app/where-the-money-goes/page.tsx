@@ -7,7 +7,7 @@ import { Card, CardBody, Badge } from "@/components/ui/card";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { ButtonLink } from "@/components/ui/button";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "לאן הכסף מגיע?",

@@ -7,7 +7,7 @@ import { DonationForm } from "@/components/flows/donation-form";
 import { HalachaNote } from "@/components/flows/halacha-note";
 import { Card, CardBody } from "@/components/ui/card";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "צרכי רבים",
@@ -15,15 +15,9 @@ export const metadata: Metadata = {
     "לדברים שהציבור נהנה מהם באופן מתמשך — קטגוריה נפרדת מצדקה.",
 };
 
-export default async function PublicNeedsPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}) {
+export default async function PublicNeedsPage() {
   const fund = await getFundContext("public_needs");
   if (!fund) notFound();
-  const sp = await searchParams;
-  const source = typeof sp.src === "string" ? sp.src : undefined;
 
   return (
     <FlowShell
@@ -39,12 +33,7 @@ export default async function PublicNeedsPage({
         </Card>
       }
     >
-      <DonationForm
-        fund={toFormFund(fund)}
-        mode="public_needs"
-        showCause
-        source={source}
-      />
+      <DonationForm fund={toFormFund(fund)} mode="public_needs" showCause />
     </FlowShell>
   );
 }
