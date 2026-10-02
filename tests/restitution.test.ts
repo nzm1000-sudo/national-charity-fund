@@ -1,11 +1,15 @@
 import { describe, it, expect } from "vitest";
 import { classifyRestitution } from "@/lib/domain/restitution";
+import { publicCopy } from "@/components/ui/public-copy";
 
 describe("restitution engine", () => {
   it("returns direct when owner known and reachable", () => {
     const o = classifyRestitution({ ownerKnown: "yes", reachable: "yes" });
     expect(o.route).toBe("return_direct");
     expect(o.needsMoreInfo).toBe(false);
+    expect(publicCopy(o.explanationHe)).toBe(
+      "כאשר בעל הממון ידוע וניתן להגיע אליו, אין לתת את הכסף למטרה אחרת, צריך להשיב לו את הממון עצמו. אם תרצה, נעזור לך לנסח פנייה מכבדת בצנעה וסתר.",
+    );
   });
 
   it("asks for reachability before deciding when owner is known", () => {

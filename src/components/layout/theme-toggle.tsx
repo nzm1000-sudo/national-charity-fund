@@ -1,57 +1,42 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { THEMES, THEME_LABELS, getStoredTheme, setTheme, type Theme } from "@/lib/theme";
-import { isDiscreetEnabled } from "@/lib/discreet";
-import { cn } from "@/lib/cn";
-
-const SWATCH: Record<Theme, string> = {
-  light: "#f5f2ea",
-  dark: "#101512",
-  amber: "#211d2b",
-};
+import { Sun, Moon, Plus, Minus, RotateCcw } from "lucide-react";
+import { getStoredTheme, setTheme, type Theme } from "@/lib/theme";
+import { getStoredTextSize, setTextSize, subscribeTextSize, TEXT_SIZE_DEFAULT, TEXT_SIZE_MIN, TEXT_SIZE_MAX, TEXT_SIZE_STEP } from "@/lib/text-size";
 
 function subscribe(cb: () => void) {
   window.addEventListener("theme-change", cb);
-  window.addEventListener("discreet-change", cb);
   return () => {
     window.removeEventListener("theme-change", cb);
-    window.removeEventListener("discreet-change", cb);
   };
 }
 
 export function ThemeToggle() {
   const theme = useSyncExternalStore(subscribe, getStoredTheme, () => "light" as Theme);
-  const discreet = useSyncExternalStore(subscribe, isDiscreetEnabled, () => false);
+  const textSize = useSyncExternalStore(subscribeTextSize, getStoredTextSize, () => TEXT_SIZE_DEFAULT);
+  const dark = theme === "dark";
+  const action = dark ? "מעבר למצב בהיר" : "מעבר למצב כהה";
 
   return (
-    <div
-      className="inline-flex items-center gap-1 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] p-1"
-      role="group"
-      aria-label="ערכת נושא"
+    <div className="appearance-controls">
+    <button
+      type="button"
+      onClick={() => setTheme(dark ? "light" : "dark")}
+      aria-pressed={dark}
+      aria-label={action}
+      title={action}
+      className="privacy-control inline-flex min-h-11 items-center gap-2 whitespace-nowrap"
     >
-      {THEMES.map((t) => {
-        const active = !discreet && theme === t;
-        return (
-          <button
-            key={t}
-            type="button"
-            onClick={() => setTheme(t)}
-            aria-pressed={active}
-            title={`ערכת ${THEME_LABELS[t]}`}
-            className={cn(
-              "grid h-8 w-8 place-items-center rounded-full transition-[box-shadow,transform] duration-150",
-              active && "ring-2 ring-[var(--color-accent)] ring-offset-1 ring-offset-[var(--color-surface)]",
-            )}
-          >
-            <span
-              className="h-4 w-4 rounded-full border border-[var(--color-border-strong)]"
-              style={{ background: SWATCH[t] }}
-            />
-            <span className="sr-only">ערכת {THEME_LABELS[t]}</span>
-          </button>
-        );
-      })}
+      {dark ? <Moon size={18} aria-hidden="true" /> : <Sun size={18} aria-hidden="true" />}
+      {dark ? "מצב כהה" : "מצב בהיר"}
+    </button>
+    <div className="text-size-controls" role="group" aria-label="גודל טקסט">
+      <button type="button" aria-label="הקטנת טקסט" title="הקטנת טקסט" disabled={textSize === TEXT_SIZE_MIN} onClick={() => setTextSize(textSize - TEXT_SIZE_STEP)}><span aria-hidden="true">א</span><Minus size={12} aria-hidden="true" /></button>
+      <button type="button" aria-label="הגדלת טקסט" title="הגדלת טקסט" disabled={textSize === TEXT_SIZE_MAX} onClick={() => setTextSize(textSize + TEXT_SIZE_STEP)}><span aria-hidden="true">א</span><Plus size={12} aria-hidden="true" /></button>
+      <button type="button" aria-label="איפוס גודל טקסט" title="איפוס גודל טקסט" disabled={textSize === TEXT_SIZE_DEFAULT} onClick={() => setTextSize(TEXT_SIZE_DEFAULT)}><RotateCcw size={15} aria-hidden="true" /></button>
+      <output className="sr-only" aria-live="polite">גודל הטקסט: {textSize}%</output>
+    </div>
     </div>
   );
 }

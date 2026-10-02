@@ -50,9 +50,14 @@ function DonationFormInner({
   qrId,
 }: DonationFormProps) {
   const router = useRouter();
-  const source = useSearchParams().get("src") ?? undefined;
-
-  const [amount, setAmount] = useState<number | null>(null);
+  const searchParams = useSearchParams();
+  const source = searchParams.get("src") ?? undefined;
+  const [amount, setAmount] = useState<number | null>(() => {
+    const requested = searchParams.get("amount");
+    if (!requested || !/^\d+(\.\d{1,2})?$/.test(requested)) return null;
+    const parsed = parseAmountToAgorot(requested);
+    return parsed != null && parsed >= fund.minAmountAgorot && parsed <= 100000000 ? parsed : null;
+  });
   const [causeId, setCauseId] = useState<string>(
     fund.destinations.find((d) => d.slug === defaultCauseSlug)?.causeId ??
       fund.destinations[0]?.causeId ??
@@ -380,7 +385,7 @@ function MaaserHelper({ onApply }: { onApply: (agorot: number) => void }) {
           בחירת הסכום המחושב
         </Button>
       </div>
-      <p className="mt-6 text-meta">חומש: <bdi className="block text-3xl">{suggested > 0 ? formatILS(suggested * 2) : "לא הוזנה הכנסה"}</bdi></p>
+      <p className="mt-6 text-meta">חומש: <bdi className={suggested > 0 ? "block text-3xl" : "block text-base"}>{suggested > 0 ? formatILS(suggested * 2) : "לא הוזנה הכנסה"}</bdi></p>
     </section>
   );
 }

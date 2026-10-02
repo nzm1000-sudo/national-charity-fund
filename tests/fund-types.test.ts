@@ -2,6 +2,13 @@ import { describe, it, expect } from "vitest";
 import { FUND_TYPES, PRIMARY_TRACKS } from "@/lib/domain/fund-types";
 
 describe("fund types", () => {
+  it("starts suggested donation amounts at 54 shekels in every fund", () => {
+    for (const fund of FUND_TYPES) {
+      expect(fund.suggestedAmounts[0]).toBe(5400);
+      expect(fund.suggestedAmounts.every(amount => amount >= 5400)).toBe(true);
+    }
+  });
+
   it("has unique codes", () => {
     const codes = FUND_TYPES.map((f) => f.code);
     expect(new Set(codes).size).toBe(codes.length);

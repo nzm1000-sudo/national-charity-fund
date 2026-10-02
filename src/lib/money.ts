@@ -42,5 +42,5 @@ export function parseAmountToAgorot(input: string): number | null {
  * convenience ordering, not a halachic determination.
  */
 export const QUICK_AMOUNTS_AGOROT = [
-  1800, 3600, 5200, 7200, 10100, 18000, 36000, 50000,
+  5400, 7200, 10100, 18000, 36000, 50000,
 ];

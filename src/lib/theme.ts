@@ -1,21 +1,20 @@
 "use client";
 
-/** Theme selection — light · dark (#101512) · amber (#211d2b), as in the app. */
+/** Theme selection: light or dark. */
 
-export type Theme = "light" | "dark" | "amber";
+export type Theme = "light" | "dark";
 
-export const THEMES: Theme[] = ["light", "dark", "amber"];
+export const THEMES: Theme[] = ["light", "dark"];
 
 export const THEME_COOKIE = "kn_theme";
 
 export const THEME_LABELS: Record<Theme, string> = {
   light: "בהירה",
   dark: "כהה",
-  amber: "ענבר",
 };
 
 export function isTheme(value: unknown): value is Theme {
-  return value === "light" || value === "dark" || value === "amber";
+  return value === "light" || value === "dark";
 }
 
 export function getStoredTheme(): Theme {

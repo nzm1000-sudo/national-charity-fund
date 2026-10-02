@@ -4,7 +4,6 @@ import { getFundContext } from "@/server/funds";
 import { toFormFund } from "@/server/fund-form";
 import { FlowShell } from "@/components/flows/flow-shell";
 import { DonationForm } from "@/components/flows/donation-form";
-import { HalachaNote } from "@/components/flows/halacha-note";
 import { Card, CardBody } from "@/components/ui/card";
 
 export const revalidate = 300;
@@ -27,7 +26,7 @@ export default async function MaaserPage() {
         <Card>
           <CardBody>
             <h2 className="mb-6 font-display text-xl">על פי ההלכה</h2>
-            <HalachaNote fundType="maaser" />
+            <p className="text-[15px] leading-relaxed text-ink-soft">מעשר כספים הינה אחת המצוות היחידות שבה הקב״ה מתחייב לשפע ופרנסה לתורמים ולתורמות. זוהי פעולת נתינה מורכבת רגשית אך בתוכה קיימת עוצמה וכח אינסופיים. ״עשר בשביל שתתעשר״</p>
           </CardBody>
         </Card>
       }

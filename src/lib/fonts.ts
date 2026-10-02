@@ -2,7 +2,7 @@ import { Frank_Ruhl_Libre, Heebo, Noto_Serif_Hebrew } from "next/font/google";
 
 export const fontFrank = Frank_Ruhl_Libre({
   subsets: ["hebrew"],
-  weight: ["900"],
+  weight: "variable",
   variable: "--font-frank",
   display: "swap",
 });
@@ -16,7 +16,7 @@ export const fontNotoSerif = Noto_Serif_Hebrew({
 
 export const fontHeebo = Heebo({
   subsets: ["hebrew"],
-  weight: ["400", "500"],
+  weight: "variable",
   variable: "--font-heebo",
   display: "swap",
 });

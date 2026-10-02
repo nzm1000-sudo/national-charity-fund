@@ -4,6 +4,8 @@
  * seeds and tests.
  */
 
+import { QUICK_AMOUNTS_AGOROT } from "@/lib/money";
+
 export type FundTypeCode =
   | "restitution"
   | "public_needs"
@@ -30,7 +32,7 @@ export interface FundTypeDef {
 }
 
 /** Quick-amount presets in agorot; admin-overridable in DB. */
-const CHAI = [1800, 3600, 5200, 7200, 10100, 18000, 36000, 50000];
+const CHAI = QUICK_AMOUNTS_AGOROT;
 
 export const FUND_TYPES: FundTypeDef[] = [
   {
@@ -100,7 +102,7 @@ export const FUND_TYPES: FundTypeDef[] = [
     receiptRequired: true,
     anonymousAllowed: false,
     minAmountAgorot: 1800,
-    suggestedAmounts: [3600, 7200, 18000, 36000],
+    suggestedAmounts: [5400, 7200, 18000, 36000],
     order: 5,
   },
   {

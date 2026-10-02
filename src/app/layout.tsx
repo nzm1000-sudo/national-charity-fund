@@ -9,7 +9,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(env.APP_URL),
   title: {
-    default: "הקופה הלאומית | להשיב, לתקן ולתת",
+    default: "הקופה הלאומית | להשיב, לתת ולתקן",
     template: "%s · הקופה הלאומית",
   },
   description:
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "he_IL",
     siteName: "הקופה הלאומית",
-    title: "הקופה הלאומית | להשיב, לתקן ולתת",
+    title: "הקופה הלאומית | להשיב, לתת ולתקן",
     description: "הכתובת להשבת ממון, לצרכי רבים, למעשר כספים, לצדקה ולפדיון נפש. בצנעה, בשקיפות ועל פי ההלכה.",
   },
   robots: { index: true, follow: true },
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#fdfbf6",
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
@@ -35,7 +35,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="he" dir="rtl" className={fontVariables} suppressHydrationWarning>
+    <html lang="he" dir="rtl" className={fontVariables} data-scroll-behavior="smooth" suppressHydrationWarning>
       <body>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <a

@@ -25,18 +25,18 @@ export function Disclosure({
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-controls={id}
-        className="flex w-full items-center justify-between gap-4 py-5 text-start"
+        className="grid w-full grid-cols-[24px_minmax(0,1fr)_24px] items-center gap-4 py-5 text-center"
       >
-        <span className="font-medium text-[var(--color-text)]">{summary}</span>
+        <span className="col-start-2 row-start-1 min-w-0 font-normal text-[var(--color-text)]">{summary}</span>
         <IconChevronDown
           className={cn(
-            "shrink-0 text-[var(--color-text-muted)] transition-transform duration-200",
+            "col-start-3 row-start-1 shrink-0 text-[var(--color-text-muted)] transition-transform duration-200",
             open && "rotate-180",
           )}
         />
       </button>
       {open && (
-        <div id={id} className="pb-8 text-base text-muted">
+        <div id={id} className="pb-8 text-center text-base text-muted">
           {children}
         </div>
       )}
