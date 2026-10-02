@@ -7,21 +7,23 @@ type Size = "sm" | "md" | "lg";
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-primary text-white hover:bg-primary-strong border border-transparent shadow-hair",
+    "bg-[var(--color-accent)] text-[var(--color-surface)] border border-transparent shadow-[var(--shadow-hair)] hover:brightness-[0.94]",
   secondary:
-    "bg-surface text-ink border border-border-strong hover:border-primary hover:text-primary",
-  ghost: "bg-transparent text-ink-soft hover:text-primary border border-transparent",
-  danger: "bg-danger text-white hover:opacity-90 border border-transparent",
+    "bg-[var(--color-surface)] text-[var(--color-text)] border border-[var(--color-border-strong)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]",
+  ghost:
+    "bg-transparent text-[var(--color-text-muted)] border border-transparent hover:text-[var(--color-accent)]",
+  danger:
+    "bg-[var(--color-danger)] text-[var(--color-surface)] border border-transparent hover:brightness-95",
 };
 
 const sizes: Record<Size, string> = {
-  sm: "text-sm px-3.5 py-2 min-h-[38px] rounded-md gap-1.5",
-  md: "text-[15px] px-5 py-3 min-h-[48px] rounded-md gap-2",
-  lg: "text-base px-6 py-3.5 min-h-[54px] rounded-md gap-2",
+  sm: "text-[var(--text-meta)] px-4 py-2 min-h-11 gap-2",
+  md: "text-[var(--text-base)] px-5 py-3 min-h-12 gap-2",
+  lg: "text-[var(--text-lg)] px-6 py-3.5 min-h-[54px] gap-2",
 };
 
 const baseClass =
-  "inline-flex items-center justify-center font-medium transition-colors duration-150 select-none focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-50 disabled:pointer-events-none";
+  "inline-flex items-center justify-center rounded-[var(--radius-card)] font-medium transition-[transform,opacity,background-color,border-color,color] duration-150 select-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)] disabled:opacity-50 disabled:pointer-events-none";
 
 interface CommonProps {
   variant?: Variant;

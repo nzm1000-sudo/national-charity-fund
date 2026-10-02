@@ -1,13 +1,9 @@
 import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
-export function Section({
-  className,
-  children,
-  ...props
-}: ComponentProps<"section">) {
+export function Section({ className, children, ...props }: ComponentProps<"section">) {
   return (
-    <section className={cn("py-12 sm:py-16", className)} {...props}>
+    <section className={cn("py-16 sm:py-24", className)} {...props}>
       {children}
     </section>
   );
@@ -36,12 +32,12 @@ export function SectionHeading({
         className,
       )}
     >
-      {eyebrow && (
-        <p className="mb-2 text-sm font-medium tracking-wide text-gold">{eyebrow}</p>
-      )}
-      <h2 className="text-2xl sm:text-3xl">{title}</h2>
+      {eyebrow && <p className="eyebrow mb-3">{eyebrow}</p>}
+      <h2 className="text-[var(--text-2xl)] sm:text-[var(--text-3xl)]">{title}</h2>
       {lead && (
-        <p className="mt-3 text-[17px] leading-relaxed text-ink-soft">{lead}</p>
+        <p className="serif mt-4 text-[var(--text-lg)] leading-relaxed text-[var(--color-text-muted)]">
+          {lead}
+        </p>
       )}
     </div>
   );

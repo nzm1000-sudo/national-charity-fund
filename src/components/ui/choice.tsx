@@ -25,10 +25,12 @@ export function ChoiceGroup({
 }) {
   return (
     <fieldset>
-      <legend className="text-[17px] font-medium text-ink">{legend}</legend>
+      <legend className="font-display text-[var(--text-lg)] font-black text-[var(--color-text)]">
+        {legend}
+      </legend>
       <div
         className={cn(
-          "mt-4 grid gap-3",
+          "mt-5 grid gap-3",
           columns === 2 && "sm:grid-cols-2",
           columns === 3 && "sm:grid-cols-3",
         )}
@@ -39,10 +41,10 @@ export function ChoiceGroup({
             <label
               key={opt.value}
               className={cn(
-                "flex cursor-pointer items-start gap-3 rounded-md border p-4 transition-colors",
+                "flex cursor-pointer items-start gap-3 rounded-[var(--radius-card)] border p-4 transition-[background-color,border-color,transform] duration-150 min-h-[64px]",
                 checked
-                  ? "border-primary bg-primary-tint"
-                  : "border-border bg-surface hover:border-border-strong",
+                  ? "border-[var(--color-accent)] bg-[var(--color-primary-tint)] shadow-[var(--shadow-hair)]"
+                  : "border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-border-strong)]",
               )}
             >
               <input
@@ -51,12 +53,12 @@ export function ChoiceGroup({
                 value={opt.value}
                 checked={checked}
                 onChange={() => onChange(opt.value)}
-                className="mt-1 h-4 w-4 accent-[var(--color-primary)]"
+                className="mt-1 h-5 w-5 accent-[var(--color-accent)]"
               />
               <span>
-                <span className="block font-medium text-ink">{opt.label}</span>
+                <span className="block font-medium text-[var(--color-text)]">{opt.label}</span>
                 {opt.description && (
-                  <span className="mt-0.5 block text-sm text-muted">
+                  <span className="mt-1 block text-[var(--text-meta)] text-[var(--color-text-muted)]">
                     {opt.description}
                   </span>
                 )}

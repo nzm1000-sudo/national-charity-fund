@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { env } from "@/lib/env";
-import { assistant, frankRuhl } from "@/lib/fonts";
+import { fontVariables } from "@/lib/fonts";
+import { themeInitScript } from "@/lib/theme-init";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import "./globals.css";
+import "./seal.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.APP_URL),
@@ -26,7 +28,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0f4c46",
+  themeColor: "#9a4a1f",
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
@@ -34,11 +36,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="he" dir="rtl" className={`${assistant.variable} ${frankRuhl.variable}`}>
+    <html lang="he" dir="rtl" className={fontVariables} suppressHydrationWarning>
       <body>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:right-2 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-white"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:right-2 focus:z-50 focus:rounded-[var(--radius-card)] focus:bg-[var(--color-accent)] focus:px-4 focus:py-2 focus:text-[var(--color-surface)]"
         >
           דלג לתוכן
         </a>

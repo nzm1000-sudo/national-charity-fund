@@ -18,19 +18,26 @@ export function Disclosure({
 }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className={cn("border-b border-border", className)}>
+    <div className={cn("border-b border-[var(--color-border)]", className)}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        className="flex w-full items-center justify-between gap-4 py-4 text-start"
+        className="flex w-full items-center justify-between gap-4 py-5 text-start"
       >
-        <span className="font-medium text-ink">{summary}</span>
+        <span className="font-medium text-[var(--color-text)]">{summary}</span>
         <IconChevronDown
-          className={cn("shrink-0 text-muted transition-transform", open && "rotate-180")}
+          className={cn(
+            "shrink-0 text-[var(--color-text-muted)] transition-transform duration-200",
+            open && "rotate-180",
+          )}
         />
       </button>
-      {open && <div className="pb-5 text-[15px] leading-relaxed text-ink-soft">{children}</div>}
+      {open && (
+        <div className="pb-6 text-[var(--text-base)] leading-relaxed text-[var(--color-text-muted)]">
+          {children}
+        </div>
+      )}
     </div>
   );
 }

@@ -1,0 +1,242 @@
+/* ---- The seal's luminosity (CircleSeal / lib/seal) ----
+   Ported from the "כזוהר הרקיע" app: the theme's gold is the anchor; violet,
+   sky (תכלת), rose and a phosphorescent green join with the ranks. Hues are
+   deeper on the light theme and luminous on the dark/amber ones. Only alive
+   seals move, and only when motion is allowed. */
+
+.circle-seal {
+  --seal-gold-hi: #c99a2e;
+  --seal-spark: #f7e3a6;
+  --seal-violet: #7a58d0;
+  --seal-sky: #2388cf;
+  --seal-rose: #cc5476;
+  --seal-green: #0f9f73;
+  --seal-blend: normal;
+}
+[data-theme="dark"] .circle-seal,
+[data-theme="amber"] .circle-seal {
+  --seal-gold-hi: #ffe19c;
+  --seal-spark: #fffdf3;
+  --seal-violet: #b89dff;
+  --seal-sky: #83d4ff;
+  --seal-rose: #ff9db6;
+  --seal-green: #6dffc2;
+  --seal-blend: screen;
+}
+
+.circle-seal-auraplane,
+.circle-seal-irisplane,
+.circle-seal-corelight {
+  mix-blend-mode: var(--seal-blend);
+}
+.circle-seal-auraplane,
+.circle-seal-glints {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+}
+.circle-seal-auraplane {
+  opacity: 0.78;
+}
+.circle-seal-irisplane {
+  opacity: 0.8;
+}
+[data-theme="dark"] .circle-seal-auraplane,
+[data-theme="amber"] .circle-seal-auraplane,
+[data-theme="dark"] .circle-seal-irisplane,
+[data-theme="amber"] .circle-seal-irisplane {
+  opacity: 1;
+}
+
+.circle-seal-aura,
+.circle-seal-haze,
+.circle-seal-iris,
+.circle-seal-corelight {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+}
+.circle-seal-glint {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+.circle-seal-iris {
+  transform: rotate(0deg);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-a11y-motion]) .circle-seal.is-alive[data-fx="0"] .circle-seal-breath {
+    animation: seal-breathe-soft 8s ease-in-out infinite;
+  }
+  html:not([data-a11y-motion]) .circle-seal.is-alive[data-fx="4"] .circle-seal-breath,
+  html:not([data-a11y-motion]) .circle-seal.is-alive[data-fx="5"] .circle-seal-breath {
+    animation: seal-breathe-deep 6s ease-in-out infinite;
+  }
+  html:not([data-a11y-motion]) .circle-seal.is-alive .circle-seal-corelight {
+    animation: seal-core 7s ease-in-out infinite;
+  }
+  html:not([data-a11y-motion]) .circle-seal.is-alive[data-fx="4"] .circle-seal-corelight,
+  html:not([data-a11y-motion]) .circle-seal.is-alive[data-fx="5"] .circle-seal-corelight {
+    animation: seal-core-deep 6s ease-in-out infinite;
+  }
+  html:not([data-a11y-motion]) .circle-seal.is-alive:not([data-fx="0"]):not([data-fx="1"]) .circle-seal-iris {
+    animation: seal-iris 48s linear infinite;
+  }
+  html:not([data-a11y-motion]) .circle-seal.is-alive[data-fx="4"] .circle-seal-iris,
+  html:not([data-a11y-motion]) .circle-seal.is-alive[data-fx="5"] .circle-seal-iris {
+    animation-duration: 36s;
+  }
+  html:not([data-a11y-motion]) .circle-seal.is-alive:not([data-fx="0"]):not([data-fx="1"]) .circle-seal-aura {
+    animation: seal-aura 9s ease-in-out infinite;
+  }
+  html:not([data-a11y-motion]) .circle-seal.is-alive:not([data-fx="0"]):not([data-fx="1"]) .circle-seal-haze {
+    animation: seal-haze 9s ease-in-out infinite;
+  }
+  html:not([data-a11y-motion]) .circle-seal.is-alive .circle-seal-haze-2 {
+    animation-delay: -2.2s;
+  }
+  html:not([data-a11y-motion]) .circle-seal.is-alive .circle-seal-haze-3 {
+    animation-delay: -4.5s;
+  }
+  html:not([data-a11y-motion]) .circle-seal.is-alive .circle-seal-haze-4 {
+    animation-delay: -6.7s;
+  }
+  html:not([data-a11y-motion]) .circle-seal.is-alive .circle-seal-sheen-2 {
+    animation: seal-sheen 34s linear -9s infinite reverse;
+  }
+  html:not([data-a11y-motion]) .circle-seal.is-alive .circle-seal-sheen-3 {
+    animation: seal-sheen 41s linear -20s infinite;
+  }
+  html:not([data-a11y-motion]) .circle-seal.is-alive .circle-seal-sheen-4 {
+    animation: seal-sheen 52s linear -31s infinite reverse;
+  }
+  html:not([data-a11y-motion]) .circle-seal.is-alive .circle-seal-glint {
+    animation: seal-glint 7s ease-in-out infinite;
+  }
+  html:not([data-a11y-motion]) .circle-seal.is-alive:not([data-small])[data-fx="3"] .circle-seal-auraplane,
+  html:not([data-a11y-motion]) .circle-seal.is-alive:not([data-small])[data-fx="4"] .circle-seal-auraplane {
+    animation: seal-depth-back 17s ease-in-out infinite;
+  }
+  html:not([data-a11y-motion]) .circle-seal.is-alive:not([data-small])[data-fx="5"] .circle-seal-auraplane {
+    animation: seal-depth-back-deep 14s ease-in-out infinite;
+  }
+  html:not([data-a11y-motion]) .circle-seal.is-alive:not([data-small]) .circle-seal-glints {
+    animation: seal-depth-front 17s ease-in-out infinite;
+  }
+  html:not([data-a11y-motion]) .circle-seal.is-alive:not([data-small])[data-fx="5"] .circle-seal-glints {
+    animation-duration: 14s;
+  }
+}
+
+@keyframes seal-breathe-soft {
+  0%,
+  100% {
+    opacity: 0.8;
+    transform: scale(0.97);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+}
+@keyframes seal-breathe-deep {
+  0%,
+  100% {
+    opacity: 0.62;
+    transform: scale(0.88);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.17);
+  }
+}
+@keyframes seal-core {
+  0%,
+  100% {
+    transform: scale(0.9);
+  }
+  50% {
+    transform: scale(1.12);
+  }
+}
+@keyframes seal-core-deep {
+  0%,
+  100% {
+    transform: scale(0.78);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+}
+@keyframes seal-iris {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes seal-aura {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes seal-haze {
+  0%,
+  100% {
+    transform: scale(0.95);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+@keyframes seal-glint {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  9% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  22% {
+    opacity: 0;
+    transform: scale(0.45);
+  }
+}
+@keyframes seal-sheen {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes seal-depth-back {
+  0%,
+  100% {
+    transform: translate(-1px, 0.6px) scale(1.012, 0.988);
+  }
+  50% {
+    transform: translate(1px, -0.6px) scale(0.988, 1.012);
+  }
+}
+@keyframes seal-depth-back-deep {
+  0%,
+  100% {
+    transform: translate(-1.6px, 1px) scale(1.022, 0.978);
+  }
+  50% {
+    transform: translate(1.6px, -1px) scale(0.978, 1.022);
+  }
+}
+@keyframes seal-depth-front {
+  0%,
+  100% {
+    transform: translate(0.9px, -0.5px);
+  }
+  50% {
+    transform: translate(-0.9px, 0.5px);
+  }
+}

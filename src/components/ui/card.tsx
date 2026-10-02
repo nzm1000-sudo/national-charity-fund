@@ -1,38 +1,36 @@
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/cn";
 
+/** A surface layer with a two-tone edge (light top, dark bottom). */
 export function Card({ className, ...props }: ComponentProps<"div">) {
-  return (
-    <div
-      className={cn(
-        "rounded-card border border-border bg-surface shadow-card",
-        className,
-      )}
-      {...props}
-    />
-  );
+  return <div className={cn("layer-surface", className)} {...props} />;
 }
 
 export function CardBody({ className, ...props }: ComponentProps<"div">) {
-  return <div className={cn("p-5 sm:p-6", className)} {...props} />;
+  return <div className={cn("p-6", className)} {...props} />;
 }
 
 export function Badge({
   className,
   tone = "neutral",
   ...props
-}: ComponentProps<"span"> & { tone?: "neutral" | "primary" | "gold" | "danger" | "success" }) {
+}: ComponentProps<"span"> & {
+  tone?: "neutral" | "primary" | "gold" | "danger" | "success";
+}) {
   const tones = {
-    neutral: "bg-surface-2 text-ink-soft border-border",
-    primary: "bg-primary-soft text-primary-strong border-transparent",
-    gold: "bg-gold-soft text-ink border-transparent",
-    danger: "bg-danger-soft text-danger border-transparent",
-    success: "bg-success-soft text-success border-transparent",
+    neutral:
+      "bg-[var(--color-surface-2)] text-[var(--color-text-muted)] border-[var(--color-border)]",
+    primary:
+      "bg-[var(--color-primary-soft)] text-[var(--color-accent)] border-transparent",
+    gold: "bg-[var(--color-gold-soft)] text-[var(--color-text)] border-transparent",
+    danger: "bg-[var(--color-danger-soft)] text-[var(--color-danger)] border-transparent",
+    success:
+      "bg-[var(--color-success-soft)] text-[var(--color-success)] border-transparent",
   } as const;
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-sm border px-2 py-0.5 text-xs font-medium",
+        "inline-flex items-center gap-1 rounded-[var(--radius-sm)] border px-2.5 py-1 text-[var(--text-caption)] font-medium",
         tones[tone],
         className,
       )}

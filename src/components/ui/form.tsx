@@ -8,22 +8,25 @@ export function Label({
   ...props
 }: ComponentProps<"label"> & { required?: boolean }) {
   return (
-    <label className={cn("block text-sm font-medium text-ink", className)} {...props}>
+    <label
+      className={cn("block text-[var(--text-meta)] font-medium text-[var(--color-text)]", className)}
+      {...props}
+    >
       {children}
-      {required && <span className="text-danger"> *</span>}
+      {required && <span className="text-[var(--color-danger)]"> *</span>}
     </label>
   );
 }
 
 const controlClass =
-  "mt-1.5 block w-full rounded-md border border-border-strong bg-surface px-3.5 py-3 text-[15px] text-ink placeholder:text-muted/70 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20";
+  "mt-2 block w-full min-h-12 rounded-[var(--radius-card)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-4 py-3 text-[var(--text-base)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/25";
 
 export function Input({ className, ...props }: ComponentProps<"input">) {
   return <input className={cn(controlClass, className)} {...props} />;
 }
 
 export function Textarea({ className, ...props }: ComponentProps<"textarea">) {
-  return <textarea className={cn(controlClass, "min-h-24 resize-y", className)} {...props} />;
+  return <textarea className={cn(controlClass, "min-h-28 resize-y", className)} {...props} />;
 }
 
 export function Field({
@@ -51,9 +54,11 @@ export function Field({
         </Label>
       )}
       {children}
-      {hint && !error && <p className="mt-1.5 text-xs text-muted">{hint}</p>}
+      {hint && !error && (
+        <p className="mt-2 text-[var(--text-caption)] text-[var(--color-text-muted)]">{hint}</p>
+      )}
       {error && (
-        <p className="mt-1.5 text-sm text-danger" role="alert">
+        <p className="mt-2 text-[var(--text-meta)] text-[var(--color-danger)]" role="alert">
           {error}
         </p>
       )}

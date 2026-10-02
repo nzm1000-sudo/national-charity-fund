@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/cn";
 import { ButtonLink } from "@/components/ui/button";
 import { DiscreetToggle } from "@/components/layout/discreet-toggle";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { LogoWordmark } from "@/components/brand/logo";
 
 const NAV = [
   { href: "/hashavat-mamon", label: "השבת ממון" },
@@ -22,16 +24,10 @@ export function SiteHeader() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-parchment/95 backdrop-blur-[2px]">
-      <div className="container-page flex h-16 items-center justify-between gap-4">
-        <Link
-          href="/"
-          className="flex items-baseline gap-2 whitespace-nowrap"
-          aria-label="הקופה הלאומית — דף הבית"
-        >
-          <span className="font-display text-xl font-semibold text-ink">
-            הקופה הלאומית
-          </span>
+    <header className="sticky top-0 z-40 border-b border-[var(--color-border)] bg-[var(--color-bg)]/85 backdrop-blur-md">
+      <div className="container-page flex h-20 items-center justify-between gap-4">
+        <Link href="/" aria-label="הקופה הלאומית — דף הבית" className="shrink-0">
+          <LogoWordmark size={38} />
         </Link>
 
         <nav aria-label="ניווט ראשי" className="hidden lg:block">
@@ -44,10 +40,10 @@ export function SiteHeader() {
                     href={item.href}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "rounded-md px-3 py-2 text-sm transition-colors",
+                      "whitespace-nowrap rounded-full px-3 py-2 text-[var(--text-meta)] transition-colors duration-150",
                       active
-                        ? "text-primary font-medium"
-                        : "text-ink-soft hover:text-primary",
+                        ? "text-[var(--color-accent)]"
+                        : "text-[var(--color-text-muted)] hover:text-[var(--color-accent)]",
                     )}
                   >
                     {item.label}
@@ -59,6 +55,9 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <span className="hidden xl:inline-flex">
+            <ThemeToggle />
+          </span>
           <span className="hidden md:inline-flex">
             <DiscreetToggle />
           </span>
@@ -67,13 +66,12 @@ export function SiteHeader() {
           </ButtonLink>
           <button
             type="button"
-            className="lg:hidden inline-flex h-11 w-11 items-center justify-center rounded-md border border-border text-ink-soft"
+            className="lg:hidden inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--color-border)] text-[var(--color-text-muted)]"
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? "סגירת תפריט" : "פתיחת תפריט"}
             onClick={() => setOpen((v) => !v)}
           >
-            <span className="sr-only">תפריט</span>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden>
               {open ? (
                 <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
@@ -89,7 +87,7 @@ export function SiteHeader() {
         <nav
           id="mobile-nav"
           aria-label="ניווט ראשי (נייד)"
-          className="lg:hidden border-t border-border bg-surface"
+          className="lg:hidden border-t border-[var(--color-border)] bg-[var(--color-surface)]"
         >
           <ul className="container-page flex flex-col py-2">
             {NAV.map((item) => (
@@ -97,13 +95,14 @@ export function SiteHeader() {
                 <Link
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="block rounded-md px-3 py-3 text-[15px] text-ink-soft hover:bg-parchment hover:text-primary"
+                  className="block rounded-[var(--radius-sm)] px-3 py-3 text-[var(--text-base)] text-[var(--color-text-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-accent)]"
                 >
                   {item.label}
                 </Link>
               </li>
             ))}
-            <li className="px-3 pb-1 pt-2 md:hidden">
+            <li className="flex items-center justify-between gap-3 px-3 pb-2 pt-3">
+              <ThemeToggle />
               <DiscreetToggle />
             </li>
             <li className="p-3">

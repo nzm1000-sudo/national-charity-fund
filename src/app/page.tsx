@@ -1,19 +1,48 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import {
-  PRIMARY_TRACKS,
-  getFundType,
-} from "@/lib/domain/fund-types";
-import { TRACK_ICONS, IconShield, IconArrowLeft } from "@/components/icons";
+import { PRIMARY_TRACKS, getFundType } from "@/lib/domain/fund-types";
+import { CircleSeal } from "@/components/brand/circle-seal";
+import { TrackRing, type TrackItem } from "@/components/home/track-ring";
 import { ButtonLink } from "@/components/ui/button";
 import { Card, CardBody } from "@/components/ui/card";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { Disclosure } from "@/components/ui/disclosure";
+import { IconShield, IconCommunity, IconArrowLeft, IconLock, IconScale } from "@/components/icons";
+import { trackColor } from "@/lib/tracks";
 
 export const revalidate = 300;
 
+const WINGS = [
+  "כיתות סיוע לילדים בעלי צרכים מיוחדים",
+  "חדרי אירוח לחיילים בודדים",
+  "בית כנסת ומניינים יומיים",
+  "מקוואות לנשים ולגברים",
+  "מרכז ייעוץ אישי, זוגי ומשפחתי",
+  "חלוקת מזון וארוחות חמות לנזקקים",
+  "ייעוץ רפואי ללא עלות",
+  "כוללים ושיעורי תורה בכל הרמות",
+];
+
+const TRUST = [
+  {
+    icon: IconLock,
+    title: "דיסקרטיות מלאה",
+    body: "אין צורך לתאר מה קרה ואין צורך בשם. אפשר להשלים תהליך שלם באנונימיות.",
+  },
+  {
+    icon: IconShield,
+    title: "שקיפות בכל שקל",
+    body: "כל תרומה משויכת לסוג קופה וליעד, עם כלל ההקצאה שנרשם לצידה.",
+  },
+  {
+    icon: IconScale,
+    title: "מקורות הלכתיים מתועדים",
+    body: "כל כלל מבוסס מקורות ומסומן בסטטוס; אין המצאה של מקורות.",
+  },
+];
+
 export default async function HomePage() {
-  const [faqs, causes] = await Promise.all([
+  const [faqs, causes, paidAgg] = await Promise.all([
     prisma.faq.findMany({
       where: { published: true, category: { in: ["restitution", "privacy", "trust"] } },
       orderBy: { sortOrder: "asc" },
@@ -24,159 +53,155 @@ export default async function HomePage() {
       orderBy: { sortOrder: "asc" },
       take: 6,
     }),
+    prisma.donation.aggregate({ where: { status: "paid" }, _sum: { amount: true }, _count: true }),
   ]);
 
-  const tracks = PRIMARY_TRACKS.map((code) => getFundType(code)!).filter(Boolean);
+  const tracks: TrackItem[] = [
+    ...PRIMARY_TRACKS,
+    "public_needs" as (typeof PRIMARY_TRACKS)[number],
+  ].map((code) => {
+    const f = getFundType(code)!;
+    return { code: f.code, name: f.nameHe, tagline: f.taglineHe, route: f.route };
+  });
+
+  const hasData = (paidAgg._sum.amount ?? 0) > 0;
 
   return (
     <>
-      {/* Hero — calm and clear, not a wall of empty words */}
-      <section className="border-b border-border bg-surface-2">
-        <div className="container-page grid gap-10 py-14 sm:py-20 lg:grid-cols-[1.15fr_1fr] lg:items-center">
-          <div className="rule-gold">
-            <p className="text-sm font-medium text-gold">
-              עמותת חסד יסובבנו · נתיבות
-            </p>
-            <h1 className="mt-3 text-4xl leading-tight sm:text-5xl">
+      {/* Opening — the seal at the centre, the five tracks around it */}
+      <section className="border-b border-[var(--color-border)] bg-[var(--color-surface-2)]">
+        <div className="container-page py-16 sm:py-24">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="eyebrow">עמותת חסד יסובבנו · נתיבות</p>
+            <h1 className="mt-4 text-[var(--text-3xl)] sm:text-[var(--text-4xl)]">
               להשיב, לתקן ולתת
             </h1>
-            <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-ink-soft">
-              יש כסף שאינך יודע למי להשיב? רוצה להפריש מעשר, לתת צדקה, או
-              לקיים פדיון נפש? כאן תמצא מסלול ברור, מכובד ודיסקרטי — בלי
-              שאלות מיותרות.
-            </p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <ButtonLink href="/hashavat-mamon" size="lg">
-                יש ממון להשיב
-              </ButtonLink>
-              <ButtonLink href="/tzedakah" size="lg" variant="secondary">
-                רוצה לתרום
-              </ButtonLink>
-            </div>
-            <p className="mt-5 flex items-center gap-2 text-sm text-muted">
-              <IconShield className="text-primary" />
-              לא נשאל על מה שקרה. אפשר להשלים תהליך בלי שם.
+            <p className="serif mx-auto mt-5 text-[var(--text-lg)] leading-relaxed text-[var(--color-text-muted)]">
+              הקופה הלאומית היא הכתובת להשבת ממון, לצרכי רבים, למעשר, לצדקה ולפדיון נפש —
+              מסלול ברור, מכובד ודיסקרטי.
             </p>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2">
-            {tracks.map((t) => {
-              const Icon = TRACK_ICONS[t.code];
-              return (
-                <Link
-                  key={t.code}
-                  href={t.route}
-                  className="group rounded-card border border-border bg-surface p-5 shadow-hair transition-colors hover:border-primary"
-                >
-                  <Icon className="text-primary" />
-                  <p className="mt-3 font-display text-lg font-medium">{t.nameHe}</p>
-                  <p className="mt-1 text-sm leading-relaxed text-muted">
-                    {t.taglineHe}
-                  </p>
-                </Link>
-              );
-            })}
+          <div className="mt-14">
+            <TrackRing tracks={tracks}>
+              <CircleSeal
+                count={1000}
+                size={320}
+                alive
+                className="h-auto max-w-full text-[var(--color-text)]"
+              />
+            </TrackRing>
           </div>
         </div>
       </section>
 
-      {/* Four tracks explained */}
+      {/* Trust row */}
       <Section>
         <div className="container-page">
-          <SectionHeading
-            rule
-            eyebrow="ארבעה מסלולים"
-            title="בחר/י את הדרך שמתאימה למצב"
-            lead="כל מסלול עובד אחרת, כי כל צורך הוא אחר. אין ערבוב בין המסלולים ללא החלטה מודעת."
-          />
-
-          <div className="mt-10 grid gap-4 md:grid-cols-2">
-            {tracks.map((t) => {
-              const Icon = TRACK_ICONS[t.code];
-              return (
-                <Card key={t.code} className="h-full">
-                  <CardBody className="flex h-full flex-col">
-                    <div className="flex items-center gap-3">
-                      <span className="grid h-11 w-11 place-items-center rounded-md bg-primary-tint text-primary">
-                        <Icon />
-                      </span>
-                      <h3 className="font-display text-xl font-medium">{t.nameHe}</h3>
-                    </div>
-                    <p className="mt-4 flex-1 text-[15px] leading-relaxed text-ink-soft">
-                      {t.descriptionHe}
-                    </p>
-                    <div className="mt-5">
-                      <Link
-                        href={t.route}
-                        className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:gap-2.5 transition-all"
-                      >
-                        למסלול {t.nameHe}
-                        <IconArrowLeft width={17} height={17} />
-                      </Link>
-                    </div>
-                  </CardBody>
-                </Card>
-              );
-            })}
+          <div className="grid gap-4 md:grid-cols-3">
+            {TRUST.map((t) => (
+              <Card key={t.title}>
+                <CardBody className="text-center">
+                  <span className="mx-auto grid h-11 w-11 place-items-center rounded-full bg-[var(--color-primary-tint)] text-[var(--color-accent)]">
+                    <t.icon width={24} height={24} />
+                  </span>
+                  <h2 className="mt-4 font-display text-lg font-black">{t.title}</h2>
+                  <p className="mt-2 text-[var(--text-meta)] leading-relaxed text-[var(--color-text-muted)]">
+                    {t.body}
+                  </p>
+                </CardBody>
+              </Card>
+            ))}
           </div>
         </div>
       </Section>
 
-      {/* Public needs — kept distinct from tzedakah */}
-      <section className="border-y border-border bg-surface-2">
-        <div className="container-page grid gap-8 py-14 lg:grid-cols-[1fr_1.1fr] lg:items-center">
+      {/* Public needs — a distinct category */}
+      <Section className="border-y border-[var(--color-border)] bg-[var(--color-surface-2)]">
+        <div className="container-page">
           <SectionHeading
             rule
             eyebrow="קטגוריה נפרדת"
             title="צרכי רבים"
-            lead="לא אותה קטגוריה כמו צדקה. מדובר בדברים שהציבור נהנה מהם באופן מתמשך — ולכן מתאימים במיוחד להשבת ממון שאין לו בעלים ידועים."
+            lead="לא אותה קטגוריה כמו צדקה: דברים שהציבור נהנה מהם באופן מתמשך — ולכן מתאימים גם להשבת ממון שאין לו בעלים ידועים."
           />
-          <ul className="grid gap-3 sm:grid-cols-2">
-            {causes.slice(0, 6).map((c) => (
-              <li
-                key={c.id}
-                className="rounded-md border border-border bg-surface px-4 py-3 text-sm text-ink-soft"
-              >
-                {c.nameHe}
+          <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {causes.map((c) => (
+              <li key={c.id}>
+                <Link
+                  href={`/cause/${c.slug}`}
+                  className="flex h-full items-center gap-4 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-surface)] transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-raised)]"
+                >
+                  <span
+                    className="grid h-10 w-10 shrink-0 place-items-center rounded-full"
+                    style={{ color: trackColor("public_needs") }}
+                  >
+                    <IconCommunity width={24} height={24} />
+                  </span>
+                  <span className="text-[var(--text-base)] text-[var(--color-text)]">{c.nameHe}</span>
+                </Link>
               </li>
             ))}
           </ul>
         </div>
-      </section>
+      </Section>
 
-      {/* Simple donate band */}
+      {/* Kezohar HaRakiah */}
       <Section>
-        <div className="container-page">
-          <div className="flex flex-col items-start justify-between gap-6 rounded-card border border-primary/20 bg-primary-tint p-8 sm:flex-row sm:items-center">
-            <div className="max-w-xl">
-              <h2 className="text-2xl">רוצה פשוט לתרום?</h2>
-              <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">
-                בחר/י סכום ומטרה — הכול מסודר, ואת/ה יכול/ה להישאר אנונימי/ת.
-              </p>
+        <div className="container-page grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:items-start">
+          <SectionHeading
+            rule
+            eyebrow="מערכת אחת"
+            title="כזוהר הרקיע"
+            lead="הקופה הלאומית היא חלק ממערכת אחת עם מתחם קהילתי בבנייה בנתיבות ועם אפליקציית כזוהר הרקיע — זמנים, לימוד ומקורות."
+          />
+          <div>
+            <ol className="grid gap-3 sm:grid-cols-2">
+              {WINGS.map((wing, i) => (
+                <li
+                  key={wing}
+                  className="flex items-start gap-3 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4"
+                >
+                  <span className="num font-display text-lg font-black text-[var(--color-accent)]">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="text-[var(--text-meta)] leading-relaxed text-[var(--color-text)]">
+                    {wing}
+                  </span>
+                </li>
+              ))}
+            </ol>
+            <div className="mt-6">
+              <a
+                href="https://nzm1000-sudo.github.io/kezohar369/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-[var(--text-meta)] font-medium text-[var(--color-link)] hover:underline"
+              >
+                למתחם כזוהר הרקיע
+                <IconArrowLeft width={17} height={17} />
+              </a>
             </div>
-            <ButtonLink href="/tzedakah" size="lg" className="shrink-0">
-              לתרום עכשיו
-            </ButtonLink>
           </div>
         </div>
       </Section>
 
-      {/* Trust */}
-      <Section className="border-t border-border bg-surface">
+      {/* Transparency */}
+      <Section className="border-y border-[var(--color-border)] bg-[var(--color-surface-2)]">
         <div className="container-page">
           <SectionHeading
             rule
             eyebrow="אמון ושקיפות"
             title="לאן הכסף מגיע?"
-            lead="כל שקל משויך לסוג קופה מוגדר, עם כלל הקצאה מתועד. אפשר לראות את המטרות, הפרויקטים וההתקדמות."
+            lead="כל שקל משויך לסוג קופה ולמטרה, עם כלל הקצאה מתועד. אנחנו מציגים רק נתונים אמיתיים."
           />
-          <div className="mt-8 flex flex-wrap gap-3">
-            <ButtonLink href="/where-the-money-goes" variant="secondary">
-              למרכז השקיפות
-            </ButtonLink>
-            <ButtonLink href="/about" variant="ghost">
-              על העמותה
-            </ButtonLink>
+          <div className="mt-8 flex flex-wrap items-center gap-4">
+            <ButtonLink href="/where-the-money-goes">למרכז השקיפות</ButtonLink>
+            {!hasData && (
+              <p className="text-[var(--text-meta)] text-[var(--color-text-muted)]">
+                הנתונים יפורסמו בקרוב.
+              </p>
+            )}
           </div>
         </div>
       </Section>
@@ -186,18 +211,18 @@ export default async function HomePage() {
         <div className="container-page grid gap-10 lg:grid-cols-[0.9fr_1.4fr]">
           <SectionHeading
             rule
-            eyebrow="שאלות שכולם שואלים"
-            title="רוצה להבין לפני?"
+            eyebrow="רוצה להבין לפני?"
+            title="שאלות שכולם שואלים"
             lead="ריכזנו את השאלות שאנשים חוששים לשאול — בפתיחות ובפשטות."
           />
-          <div className="border-t border-border">
+          <div className="border-t border-[var(--color-border)]">
             {faqs.map((f) => (
               <Disclosure key={f.id} summary={f.question}>
                 {f.answer}
               </Disclosure>
             ))}
-            <div className="pt-5">
-              <Link href="/faq" className="text-sm font-medium text-primary">
+            <div className="pt-6">
+              <Link href="/faq" className="text-[var(--text-meta)] font-medium text-[var(--color-link)]">
                 כל השאלות
               </Link>
             </div>

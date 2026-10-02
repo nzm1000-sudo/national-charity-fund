@@ -1,15 +1,24 @@
-import { Assistant, Frank_Ruhl_Libre } from "next/font/google";
+import { Frank_Ruhl_Libre, Heebo, Noto_Serif_Hebrew } from "next/font/google";
 
-export const assistant = Assistant({
+export const fontFrank = Frank_Ruhl_Libre({
   subsets: ["hebrew", "latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-assistant",
+  weight: ["900"],
+  variable: "--font-frank",
   display: "swap",
 });
 
-export const frankRuhl = Frank_Ruhl_Libre({
-  subsets: ["hebrew", "latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-frank-ruhl",
+export const fontNotoSerif = Noto_Serif_Hebrew({
+  subsets: ["hebrew"],
+  weight: ["300", "400"],
+  variable: "--font-noto-serif",
   display: "swap",
 });
+
+export const fontHeebo = Heebo({
+  subsets: ["hebrew", "latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-heebo",
+  display: "swap",
+});
+
+export const fontVariables = `${fontFrank.variable} ${fontNotoSerif.variable} ${fontHeebo.variable}`;

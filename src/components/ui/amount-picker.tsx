@@ -6,8 +6,8 @@ import { formatILS, parseAmountToAgorot } from "@/lib/money";
 import { Input } from "@/components/ui/form";
 
 /**
- * Amount picker: quick chai presets + a free "other" amount.
- * Amounts are agorot. RTL-safe: the ₪ symbol and digits use the .num helper.
+ * Amount picker: symmetric preset buttons with large tabular numerals, plus a
+ * free "other" amount. Amounts are agorot. RTL-safe via the .num helper.
  */
 export function AmountPicker({
   presets,
@@ -59,7 +59,11 @@ export function AmountPicker({
 
   return (
     <div>
-      <div className="grid grid-cols-3 gap-2 sm:grid-cols-4" role="group" aria-label="בחירת סכום">
+      <div
+        className="grid grid-cols-3 gap-3 sm:grid-cols-4"
+        role="group"
+        aria-label="בחירת סכום"
+      >
         {presets.map((amount) => {
           const checked = value === amount && !customOpen;
           return (
@@ -69,19 +73,21 @@ export function AmountPicker({
               aria-pressed={checked}
               onClick={() => choosePreset(amount)}
               className={cn(
-                "rounded-md border px-3 py-3 text-center text-[15px] font-medium transition-colors",
+                "flex min-h-[64px] items-center justify-center rounded-[var(--radius-card)] border px-3 text-center transition-[background-color,border-color,transform] duration-150",
                 checked
-                  ? "border-primary bg-primary-tint text-primary-strong"
-                  : "border-border bg-surface text-ink-soft hover:border-border-strong",
+                  ? "border-[var(--color-accent)] bg-[var(--color-primary-tint)] text-[var(--color-accent)] shadow-[var(--shadow-hair)]"
+                  : "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:border-[var(--color-border-strong)]",
               )}
             >
-              <span className="num">{formatILS(amount)}</span>
+              <span className="num font-display text-[var(--text-xl)] font-black">
+                {formatILS(amount)}
+              </span>
             </button>
           );
         })}
       </div>
 
-      <div className="mt-3">
+      <div className="mt-4">
         <button
           type="button"
           onClick={() => {
@@ -90,16 +96,18 @@ export function AmountPicker({
           }}
           aria-expanded={customOpen}
           className={cn(
-            "text-sm underline decoration-dotted underline-offset-4",
-            customOpen ? "text-primary" : "text-ink-soft hover:text-primary",
+            "text-[var(--text-meta)] underline decoration-dotted underline-offset-4",
+            customOpen
+              ? "text-[var(--color-accent)]"
+              : "text-[var(--color-text-muted)] hover:text-[var(--color-accent)]",
           )}
         >
           סכום אחר
         </button>
 
         {customOpen && (
-          <div className="mt-2.5 flex items-center gap-2">
-            <span className="text-lg text-muted" aria-hidden>
+          <div className="mt-3 flex items-center gap-3">
+            <span className="text-[var(--text-lg)] text-[var(--color-text-muted)]" aria-hidden>
               {currencyLabel}
             </span>
             <Input
@@ -109,12 +117,12 @@ export function AmountPicker({
               onChange={(e) => chooseCustom(e.target.value)}
               placeholder="הזן/י סכום"
               aria-label="סכום בשקלים"
-              className="mt-0 max-w-40"
+              className="mt-0 max-w-44"
             />
           </div>
         )}
         {error && (
-          <p className="mt-1.5 text-sm text-danger" role="alert">
+          <p className="mt-2 text-[var(--text-meta)] text-[var(--color-danger)]" role="alert">
             {error}
           </p>
         )}
