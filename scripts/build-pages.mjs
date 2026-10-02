@@ -61,6 +61,12 @@ process.env.PAGES_BASE_PATH = basePath;
 process.env.NEXT_PUBLIC_STATIC_DEMO = "1";
 process.env.APP_URL = appUrl;
 process.env.NODE_ENV = "production";
+// CI has no .env — provide build-only defaults. These are not secrets: the
+// static preview has no server, database or admin at runtime.
+process.env.DATABASE_URL ||= "file:./dev.db";
+process.env.SESSION_SECRET ||= "pages-build-only-secret-000000000000";
+process.env.ADMIN_BOOTSTRAP_EMAIL ||= "admin@example.org";
+process.env.ADMIN_BOOTSTRAP_PASSWORD ||= "ChangeMe123!";
 
 console.log(`→ Static Pages build  basePath=${basePath}  appUrl=${appUrl}`);
 
