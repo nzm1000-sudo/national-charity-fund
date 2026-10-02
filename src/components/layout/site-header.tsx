@@ -22,7 +22,7 @@ export function SiteHeader() {
         <Link href="/" aria-label="הקופה הלאומית, לדף הבית" className="header-brand no-underline">
           <small className="header-organization">ארגון חסד יסובבנו</small>
           <strong>הקופה הלאומית</strong>
-          <small>להשיב, לתת ולתקן</small>
+          <small className="header-tagline">להשיב, לתת ולתקן</small>
         </Link>
         <button type="button" aria-label={open ? "סגירת תפריט" : "פתיחת תפריט"} title={open ? "סגירת תפריט" : "פתיחת תפריט"} aria-expanded={open} aria-controls="mobile-nav" onClick={() => setOpen(!open)} className="privacy-control menu-toggle">{open ? <X size={18} /> : <Menu size={18} />}</button>
         <nav aria-label="ניווט ראשי" className="desktop-nav">

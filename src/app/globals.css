@@ -114,6 +114,8 @@
   .header-brand strong { font: 400 calc(19px * var(--text-scale, 1))/1.15 var(--font-display); }
   .header-brand small { font-size: calc(11px * var(--text-scale, 1)); margin-top: 2px; color: var(--color-text-muted); }
   .header-brand .header-organization { font-size: calc(14px * var(--text-scale, 1)); margin: 0 0 2px; color: var(--color-text); }
+  .header-brand .header-tagline { color: #2463c4; }
+  [data-theme="dark"] .header-brand .header-tagline { color: #7db8ff; }
   .desktop-nav { display: none; }
   .header-donate { grid-column: 1; grid-row: 1; justify-self: center; display: inline-flex; align-items: center; justify-content: center; gap: 4px; min-height: 36px; padding: 4px 8px; background: #f7c996; color: #47301d; border-radius: 4px; font-size: calc(12px * var(--text-scale, 1)); font-weight: 500; }
   .header-donate:hover { background: #f3bb7d; }
