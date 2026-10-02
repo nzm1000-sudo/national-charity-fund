@@ -5,6 +5,8 @@ export default [
   {
     ignores: [
       ".next/**",
+      "out/**",
+      ".pages-exclude/**",
       "node_modules/**",
       "src/generated/**",
       "prisma/*.db",
@@ -12,6 +14,7 @@ export default [
     ],
   },
   {
+    files: ["**/*.{ts,tsx}"],
     rules: {
       "@typescript-eslint/no-unused-vars": [
         "warn",
