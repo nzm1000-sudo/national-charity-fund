@@ -108,16 +108,17 @@
 
 @layer components {
   .site-header { position: relative; background: var(--color-bg); }
-  .header-row { min-height: 74px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding-block: 6px; }
+  .header-row { min-height: 74px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; padding-block: 6px; }
+  .header-row > a { min-width: 0; }
+  .header-verse { grid-column: 2; grid-row: 1; justify-self: center; width: min(100%, 380px); min-height: 64px; display: grid; place-items: center; padding: 10px 24px; border: 1px solid #b58b37; border-radius: 50%; text-align: center; color: var(--color-text-muted); font: 300 calc(25px * var(--text-scale, 1))/1.4 var(--font-noto-serif); }
   .header-brand { display: grid; justify-items: center; line-height: 1.15; text-align: center; }
   .header-brand strong { font: 400 calc(23px * var(--text-scale, 1))/1.15 var(--font-display); }
   .header-brand small { font-size: calc(11px * var(--text-scale, 1)); color: var(--color-text-muted); margin-top: 2px; }
   .header-brand .header-organization { font-size: calc(15px * var(--text-scale, 1)); color: var(--color-text); margin: 0 0 2px; }
-  .organization-seal.header-brand-seal { margin-top: 10px; border-width: 1px; box-shadow: 0 2px 8px #173d3010; }
   .desktop-nav { display: none; }
-  .header-actions { flex-wrap: wrap; justify-content: center; }
-  .header-donate { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 18px; background: #d7f278; color: #173d30; border-radius: 4px; font-size: calc(14px * var(--text-scale, 1)); font-weight: 500; }
-  .privacy-control.menu-toggle { display: grid; place-items: center; padding: 0; width: 44px; height: 44px; flex-shrink: 0; }
+  .header-actions { grid-column: 3; grid-row: 1; flex-wrap: nowrap; justify-content: flex-end; }
+  .header-donate { display: inline-flex; align-items: center; justify-content: center; gap: 4px; min-height: 36px; padding: 4px 8px; background: #d7f278; color: #173d30; border-radius: 4px; font-size: calc(12px * var(--text-scale, 1)); font-weight: 500; }
+  .privacy-control.menu-toggle { display: grid; place-items: center; padding: 0; width: 36px; height: 36px; min-height: 36px; flex-shrink: 0; }
   .mobile-nav { max-height: calc(100dvh - 88px); overflow-y: auto; }
   .giving-hero { position: relative; min-height: 610px; overflow: hidden; background: #fff; color: #253730; }
   .hero-photo { object-fit: cover; object-position: center 48%; filter: saturate(.7); }
@@ -249,17 +250,15 @@
   [data-theme="dark"] .photo-caption { background: #101512d9; color: #d3ded7; }
   @keyframes arrival { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
   @media (min-width: 1360px) {
-    .header-row { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 24px; row-gap: 8px; }
-    .header-row > a { grid-column: 1; grid-row: 1 / 3; }
-    .header-actions { grid-column: 2; grid-row: 1; justify-content: flex-end; }
-    .desktop-nav { display: block; grid-column: 2; grid-row: 2; }
+    .header-row { column-gap: 24px; row-gap: 4px; }
+    .desktop-nav { display: block; grid-column: 1 / -1; grid-row: 2; }
     .desktop-nav > ul { flex-wrap: wrap; justify-content: center; }
     .privacy-control.menu-toggle, .mobile-nav { display: none; }
   }
-  @media (max-width: 599px) { .header-row > a, .header-actions { margin-inline: auto; } }
-  @media (max-width: 359px) {
-    .site-header .header-row { padding-inline: 12px; }
-    .header-row .header-actions { flex-direction: column; gap: 6px; }
+  @media (max-width: 599px) {
+    .site-header .header-row { padding-inline: 12px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: 6px; }
+    .header-row .header-actions { flex-direction: column; align-items: flex-end; gap: 6px; }
+    .header-verse { min-height: 52px; padding: 10px 8px; font-size: calc(15px * var(--text-scale, 1)); }
   }
   @media (max-width: 1023px) {
     .giving-hero h1 { font-size: calc(54px * var(--text-scale, 1)); }
@@ -272,7 +271,6 @@
   @media (max-width: 767px) {
     .header-row { min-height: 74px; gap: 10px; }
     .header-brand strong { font-size: calc(19px * var(--text-scale, 1)); }
-    .header-donate { padding-inline: 12px; }
     .mobile-nav { max-height: calc(100dvh - 74px); }
     .giving-hero { min-height: 570px; }
     .hero-photo { object-position: 28% bottom; }
