@@ -18,15 +18,14 @@ export function SiteHeader() {
   return (
     <header className="site-header border-b border-border bg-parchment">
       <div className="container-page header-row">
-        <Link href="/" aria-label="הקופה הלאומית, לדף הבית" className="shrink-0 no-underline">
-          <span className="header-brand"><small className="header-organization">ארגון חסד יסובבנו</small><strong>הקופה הלאומית</strong><small>להשיב, לתת ולתקן</small></span>
+        <span className="header-appearance hidden lg:block"><ThemeToggle /></span>
+        <Link href="/" aria-label="הקופה הלאומית, לדף הבית" className="header-brand no-underline">
+          <strong>ארגון חסד יסובבנו</strong>
         </Link>
-        <span className="header-verse">והשיב את הגזלה</span>
         <nav aria-label="ניווט ראשי" className="desktop-nav">
           <ul className="flex items-center gap-4">{NAV.map(([href, label]) => <li key={href}><Link href={href} aria-current={pathname === href ? "page" : undefined} className="site-nav-link">{label}</Link></li>)}</ul>
         </nav>
         <div className="header-actions flex items-center gap-3">
-          <span className="hidden lg:block"><ThemeToggle /></span>
           <Link href="/tzedakah" className="header-donate"><Heart size={14} aria-hidden="true" /><span>לתרומה</span></Link>
           <button type="button" aria-label={open ? "סגירת תפריט" : "פתיחת תפריט"} title={open ? "סגירת תפריט" : "פתיחת תפריט"} aria-expanded={open} aria-controls="mobile-nav" onClick={() => setOpen(!open)} className="privacy-control menu-toggle">{open ? <X size={18} /> : <Menu size={18} />}</button>
         </div>
