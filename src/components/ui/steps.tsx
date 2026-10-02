@@ -26,17 +26,14 @@ export function Steps({
           <span
             key={i}
             className={cn(
-              "h-1.5 flex-1 rounded-full transition-colors duration-200",
+              "h-1 flex-1",
               i < current ? "bg-[var(--color-accent)]" : "bg-[var(--color-border)]",
             )}
           />
         ))}
       </div>
       <div className="mt-3 flex items-center justify-between text-[var(--text-caption)] text-[var(--color-text-muted)]">
-        <span className="num">
-          שלב {current} מתוך {total}
-        </span>
-        {labels?.[current - 1] && <span>{labels[current - 1]}</span>}
+        <span>שלב <bdi>{current}</bdi> מתוך <bdi>{total}</bdi>{labels?.[current - 1] && ` · ${labels[current - 1]}`}</span>
       </div>
     </div>
   );

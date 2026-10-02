@@ -25,12 +25,12 @@ export function ChoiceGroup({
 }) {
   return (
     <fieldset>
-      <legend className="font-display text-[var(--text-lg)] font-black text-[var(--color-text)]">
+      <legend className="font-display text-xl text-ink">
         {legend}
       </legend>
       <div
         className={cn(
-          "mt-5 grid gap-3",
+          "mt-6 grid gap-4 auto-rows-fr",
           columns === 2 && "sm:grid-cols-2",
           columns === 3 && "sm:grid-cols-3",
         )}
@@ -41,10 +41,10 @@ export function ChoiceGroup({
             <label
               key={opt.value}
               className={cn(
-                "flex cursor-pointer items-start gap-3 rounded-[var(--radius-card)] border p-4 transition-[background-color,border-color,transform] duration-150 min-h-[64px]",
+                "flex cursor-pointer items-start gap-3 rounded-card border p-4 min-h-16",
                 checked
-                  ? "border-[var(--color-accent)] bg-[var(--color-primary-tint)] shadow-[var(--shadow-hair)]"
-                  : "border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-border-strong)]",
+                  ? "border-ink bg-surface-2"
+                  : "border-border-strong bg-surface",
               )}
             >
               <input

@@ -1,0 +1,25 @@
+import { cn } from "@/lib/cn";
+
+/** The supplied emblem is preserved exactly, with React attribute spelling. */
+export function Emblem({ size = 32, className }: { size?: number; className?: string }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="סמל הקופה הלאומית" width={size} height={size} className={cn("emblem", className)}>
+      <circle cx="100" cy="100" r="86" fill="none" stroke="currentColor" strokeWidth="0.9"/>
+      <circle cx="100" cy="100" r="46" fill="none" stroke="currentColor" strokeWidth="0.9" opacity=".4"/>
+      <circle cx="100.0" cy="32.0" r="5.6" fill="currentColor"/>
+      <circle cx="131.6" cy="39.79" r="5.6" fill="currentColor"/>
+      <circle cx="155.96" cy="61.37" r="5.6" fill="currentColor"/>
+      <circle cx="167.5" cy="91.8" r="5.6" fill="currentColor"/>
+      <circle cx="163.58" cy="124.11" r="5.6" fill="currentColor"/>
+      <circle cx="145.09" cy="150.9" r="5.6" fill="currentColor"/>
+      <circle cx="116.27" cy="166.02" r="5.6" fill="currentColor"/>
+      <circle cx="83.73" cy="166.02" r="5.6" fill="currentColor"/>
+      <circle cx="54.91" cy="150.9" r="5.6" fill="currentColor"/>
+      <circle cx="36.42" cy="124.11" r="5.6" fill="currentColor"/>
+      <circle cx="32.5" cy="91.8" r="5.6" fill="currentColor"/>
+      <circle cx="44.04" cy="61.37" r="5.6" fill="currentColor"/>
+      <circle cx="68.4" cy="39.79" r="5.6" fill="currentColor"/>
+      <circle cx="100" cy="100" r="13" fill="var(--color-gold)"/>
+    </svg>
+  );
+}

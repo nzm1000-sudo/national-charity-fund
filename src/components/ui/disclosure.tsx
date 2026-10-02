@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useId, useState, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 import { IconChevronDown } from "@/components/icons";
 
@@ -17,12 +17,14 @@ export function Disclosure({
   className?: string;
 }) {
   const [open, setOpen] = useState(defaultOpen);
+  const id = useId();
   return (
     <div className={cn("border-b border-[var(--color-border)]", className)}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
+        aria-controls={id}
         className="flex w-full items-center justify-between gap-4 py-5 text-start"
       >
         <span className="font-medium text-[var(--color-text)]">{summary}</span>
@@ -34,7 +36,7 @@ export function Disclosure({
         />
       </button>
       {open && (
-        <div className="pb-6 text-[var(--text-base)] leading-relaxed text-[var(--color-text-muted)]">
+        <div id={id} className="pb-8 text-base text-muted">
           {children}
         </div>
       )}

@@ -19,7 +19,7 @@ export function Label({
 }
 
 const controlClass =
-  "mt-2 block w-full min-h-12 rounded-[var(--radius-card)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-4 py-3 text-[var(--text-base)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/25";
+  "mt-2 block w-full min-h-12 rounded-card border border-border-strong bg-surface px-4 py-3 text-base text-ink placeholder:text-muted";
 
 export function Input({ className, ...props }: ComponentProps<"input">) {
   return <input className={cn(controlClass, className)} {...props} />;

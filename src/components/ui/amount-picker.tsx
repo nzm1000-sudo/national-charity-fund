@@ -50,7 +50,7 @@ export function AmountPicker({
     }
     if (parsed < minAgorot) {
       onChange(null);
-      setError(`הסכום המינימלי הוא ${formatILS(minAgorot)}`);
+      setError(`הסכום המזערי הוא ${formatILS(minAgorot)}`);
       return;
     }
     setError(null);
@@ -60,7 +60,7 @@ export function AmountPicker({
   return (
     <div>
       <div
-        className="grid grid-cols-3 gap-3 sm:grid-cols-4"
+        className="grid grid-cols-2 gap-4 sm:grid-cols-4"
         role="group"
         aria-label="בחירת סכום"
       >
@@ -73,13 +73,13 @@ export function AmountPicker({
               aria-pressed={checked}
               onClick={() => choosePreset(amount)}
               className={cn(
-                "flex min-h-[64px] items-center justify-center rounded-[var(--radius-card)] border px-3 text-center transition-[background-color,border-color,transform] duration-150",
+                "flex min-h-[80px] items-center justify-center rounded-card border px-4 text-center",
                 checked
-                  ? "border-[var(--color-accent)] bg-[var(--color-primary-tint)] text-[var(--color-accent)] shadow-[var(--shadow-hair)]"
-                  : "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:border-[var(--color-border-strong)]",
+                  ? "border-ink bg-surface-2 text-ink"
+                  : "border-border-strong bg-surface text-ink",
               )}
             >
-              <span className="num font-display text-[var(--text-xl)] font-black">
+              <span className="num text-xl font-medium">
                 {formatILS(amount)}
               </span>
             </button>
@@ -96,7 +96,7 @@ export function AmountPicker({
           }}
           aria-expanded={customOpen}
           className={cn(
-            "text-[var(--text-meta)] underline decoration-dotted underline-offset-4",
+            "min-h-11 text-meta underline underline-offset-4",
             customOpen
               ? "text-[var(--color-accent)]"
               : "text-[var(--color-text-muted)] hover:text-[var(--color-accent)]",
@@ -115,7 +115,7 @@ export function AmountPicker({
               inputMode="decimal"
               value={custom}
               onChange={(e) => chooseCustom(e.target.value)}
-              placeholder="הזן/י סכום"
+              placeholder="סכום"
               aria-label="סכום בשקלים"
               className="mt-0 max-w-44"
             />
