@@ -22,11 +22,11 @@ export default async function PidyonPage() {
     <FlowShell
       eyebrow="מסלול נפרד"
       title="פדיון נפש"
-      lead="פדיון נפש הוא מנהג ישראל: נותנים צדקה, ואפשר לצרף שם ושם אם. אין סכום חובה — כל אחד לפי יכולתו."
+      lead="פדיון נפש כמנהג ישראל. שם האדם ושם אמו, נוסח הבקשה ותרומה לצדקה כפי היכולת."
       aside={
         <Card>
           <CardBody>
-            <h2 className="mb-3 font-display text-lg font-medium">הבסיס ההלכתי</h2>
+            <h2 className="mb-6 font-display text-xl">על פי ההלכה</h2>
             <HalachaNote fundType="pidyon_nefesh" />
           </CardBody>
         </Card>

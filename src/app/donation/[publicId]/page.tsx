@@ -12,15 +12,6 @@ import { IconCheck } from "@/components/icons";
 export const dynamic = "force-dynamic";
 export const metadata = { title: "סיכום פעולה", robots: { index: false } };
 
-const THANKS: Record<string, string> = {
-  tzedakah: "תודה שהיית שותף לעזרה. הנתינה שלך תגיע למי שזקוק לה.",
-  maaser: "תודה שהפרשת מעשר. נשמור על רצף ואפשר יהיה לחזור בקלות.",
-  public_needs: "תודה. הכסף יופנה לדברים שהציבור נהנה מהם — באופן מתמשך ומכובד.",
-  pidyon_nefesh: "הפדיון נרשם. נעשה את המעשה ככל האפשר לפי המנהג.",
-  restitution: "הפעולה נרשמה בשקט. עשית את מה שאפשר כדי לתקן — וזה העיקר.",
-  general: "תודה. נדאג שהתרומה תגיע למקום המתאים.",
-};
-
 export default async function DonationStatusPage({
   params,
 }: {
@@ -52,10 +43,10 @@ export default async function DonationStatusPage({
                   <IconCheck />
                 </span>
                 <h1 className="mt-4 font-display text-3xl">
-                  הפעולה הושלמה בהצלחה
+                   התרומה התקבלה
                 </h1>
-                <p className="mt-3 text-[17px] leading-relaxed text-ink-soft">
-                  {THANKS[donation.fundTypeCode] ?? THANKS.general}
+                <p className="mt-3 text-base text-ink-soft">
+                  {donation.provider === "mock" ? "ההדגמה הושלמה. לא התקבלה תרומה ולא בוצע חיוב." : <>תודה. מספר התרומה: <bdi>{donation.publicId}</bdi>.</>}
                 </p>
               </>
             ) : failed ? (
@@ -63,7 +54,7 @@ export default async function DonationStatusPage({
                 <Badge tone="danger">התשלום לא הושלם</Badge>
                 <h1 className="mt-4 font-display text-3xl">לא הצלחנו להשלים את התשלום</h1>
                 <p className="mt-3 text-[17px] leading-relaxed text-ink-soft">
-                  לא חויבת. אפשר לנסות שוב, והפרטים נשמרו.
+                  התשלום לא הושלם. אפשר לנסות שוב.
                 </p>
               </>
             ) : (
@@ -108,7 +99,7 @@ export default async function DonationStatusPage({
                 <ButtonLink href={mockPayHref}>להשלמת התשלום</ButtonLink>
               )}
               <ButtonLink href="/where-the-money-goes" variant="secondary">
-                לאן הכסף מגיע
+                לאן מגיעה התרומה
               </ButtonLink>
               <Link
                 href="/"

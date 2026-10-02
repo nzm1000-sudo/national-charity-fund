@@ -1,141 +1,26 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { FUND_TYPES } from "@/lib/domain/fund-types";
 import { formatILS } from "@/lib/money";
-import { Card, CardBody, Badge } from "@/components/ui/card";
 import { Section, SectionHeading } from "@/components/ui/section";
-import { ButtonLink } from "@/components/ui/button";
+import { publicCopy } from "@/components/ui/public-copy";
 
 export const revalidate = 60;
+export const metadata: Metadata = { title:"לאן מגיעה התרומה",description:"כל שקל משויך לקופה ולכלל הקצאה מתועד. כאן מוצגים היעדים, המיזמים והתקדמותם." };
 
-export const metadata: Metadata = {
-  title: "לאן הכסף מגיע?",
-  description: "שקיפות: מטרות, פרויקטים, התקדמות וסכומים — נתונים אמיתיים בלבד.",
-};
-
-export default async function WhereTheMoneyGoesPage() {
-  const [causes, allocationsByCause, totalPaid, byFund] = await Promise.all([
-    prisma.cause.findMany({ where: { publicVisible: true }, orderBy: { sortOrder: "asc" } }),
-    prisma.allocation.groupBy({
-      by: ["causeId"],
-      where: { donation: { status: "paid" } },
-      _sum: { amount: true },
-    }),
-    prisma.donation.aggregate({
-      where: { status: "paid" },
-      _sum: { amount: true },
-      _count: true,
-    }),
-    prisma.allocation.groupBy({
-      by: ["fundTypeCode"],
-      where: { donation: { status: "paid" } },
-      _sum: { amount: true },
-    }),
+export default async function TransparencyPage() {
+  const [causes,allocations,campaigns,paid] = await Promise.all([
+    prisma.cause.findMany({where:{publicVisible:true},orderBy:{sortOrder:"asc"}}),
+    prisma.allocation.groupBy({by:["causeId"],where:{donation:{status:"paid",provider:{not:"mock"}}},_sum:{amount:true}}),
+    prisma.campaign.findMany({where:{publicVisible:true,active:true},include:{donations:{where:{status:"paid",provider:{not:"mock"}}}}}),
+    prisma.donation.aggregate({where:{status:"paid",provider:{not:"mock"}},_sum:{amount:true},_count:true}),
   ]);
-
-  const causeTotals = new Map(allocationsByCause.map((r) => [r.causeId, r._sum.amount ?? 0]));
-  const fundTotals = new Map(byFund.map((r) => [r.fundTypeCode, r._sum.amount ?? 0]));
-  const total = totalPaid._sum.amount ?? 0;
-
-  return (
-    <>
-      <Section className="pt-10">
-        <div className="container-page">
-          <SectionHeading
-            rule
-            eyebrow="אמון ושקיפות"
-            title="לאן הכסף מגיע?"
-            lead="כל שקל משויך לסוג קופה ולמטרה, עם כלל הקצאה מתועד. אנחנו מציגים רק נתונים אמיתיים — גם כשהם עדיין קטנים."
-          />
-
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
-            <Card>
-              <CardBody>
-                <p className="text-sm text-muted">סך תרומות שהושלמו</p>
-                <p className="mt-1 font-display text-3xl">{formatILS(total)}</p>
-              </CardBody>
-            </Card>
-            <Card>
-              <CardBody>
-                <p className="text-sm text-muted">מספר פעולות</p>
-                <p className="mt-1 num font-display text-3xl">{totalPaid._count}</p>
-              </CardBody>
-            </Card>
-            <Card>
-              <CardBody>
-                <p className="text-sm text-muted">מטרות פעילות</p>
-                <p className="mt-1 num font-display text-3xl">{causes.length}</p>
-              </CardBody>
-            </Card>
-          </div>
-        </div>
-      </Section>
-
-      {/* By fund type */}
-      <Section className="border-y border-border bg-surface-2">
-        <div className="container-page">
-          <h2 className="text-2xl">פילוח לפי סוג קופה</h2>
-          <p className="mt-2 text-sm text-muted">
-            אין עירוב בין הקטגוריות. כל סוג קופה מוקצה בנפרד.
-          </p>
-          <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {FUND_TYPES.filter((f) => f.code !== "general" && f.code !== "campaign").map((f) => (
-              <li key={f.code} className="rounded-md border border-border bg-surface p-4">
-                <p className="text-sm text-muted">{f.nameHe}</p>
-                <p className="mt-1 font-display text-xl">
-                  {formatILS(fundTotals.get(f.code) ?? 0)}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </Section>
-
-      {/* Causes */}
-      <Section>
-        <div className="container-page">
-          <h2 className="text-2xl">מטרות</h2>
-          <p className="mt-2 text-sm text-muted">
-            ניתן לתרום למטרה מסוימת, או להניח לנו להפנות למקום הדחוף ביותר.
-          </p>
-          <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {causes.map((c) => (
-              <Card key={c.id}>
-                <CardBody>
-                  <div className="flex items-start justify-between gap-3">
-                    <h3 className="font-medium">{c.nameHe}</h3>
-                    <Badge tone="neutral">{formatILS(causeTotals.get(c.id) ?? 0)}</Badge>
-                  </div>
-                  {c.summary && (
-                    <p className="mt-2 text-sm leading-relaxed text-ink-soft">{c.summary}</p>
-                  )}
-                  <Link
-                    href={`/cause/${c.slug}`}
-                    className="mt-4 inline-block text-sm font-medium text-primary"
-                  >
-                    לתרום למטרה זו
-                  </Link>
-                </CardBody>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </Section>
-
-      <Section className="border-t border-border bg-surface-2">
-        <div className="container-page flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center">
-          <div>
-            <h2 className="text-2xl">רוצה לקחת חלק?</h2>
-            <p className="mt-2 text-sm text-ink-soft">
-              בחר/י מסלול — או פשוט תרום/י ונסדיר את השאר.
-            </p>
-          </div>
-          <ButtonLink href="/tzedakah" size="lg">
-            לתרום עכשיו
-          </ButtonLink>
-        </div>
-      </Section>
-    </>
-  );
+  const totals = new Map(allocations.map(a => [a.causeId,a._sum.amount ?? 0]));
+  const hasData = allocations.length > 0;
+  return <Section><div className="container-page"><SectionHeading eyebrow="אמון ושקיפות" title="לאן מגיעה התרומה" lead="כל שקל משויך לקופה ולכלל הקצאה מתועד. כאן מוצגים היעדים, המיזמים והתקדמותם." />
+    {hasData ? <div className="metrics"><div className="metric"><strong>{formatILS(paid._sum.amount ?? 0)}</strong><span>תרומות שהושלמו</span></div><div className="metric"><strong>{paid._count}</strong><span>מספר תרומות</span></div><div className="metric"><strong>{formatILS(allocations.reduce((s,a) => s + (a._sum.amount ?? 0),0))}</strong><span>סכום שהוקצה</span></div></div> : <p className="mx-auto mt-12 text-center text-muted">הנתונים יפורסמו בקרוב.</p>}
+    {campaigns.length > 0 && <div className="mt-16 grid gap-6 md:grid-cols-2">{campaigns.map(c => { const raised = c.donations.reduce((s,d) => s + d.amount,0); return <article key={c.id} className="public-card"><h3>{c.nameHe}</h3><p>יעד התרומה: {publicCopy(c.summary ?? "פרטי היעד יפורסמו בקרוב.")}</p><dl className="text-meta"><dt>סכום שגויס</dt><dd className="num">{formatILS(raised)}</dd><dt>סכום נדרש</dt><dd>{c.goalAmount ? formatILS(c.goalAmount) : "[לאישור]"}</dd></dl>{c.goalAmount && <progress value={raised} max={c.goalAmount} aria-label={`התקדמות ${c.nameHe}`} className="w-full" />}<p>עדכון אחרון: <bdi>{new Intl.DateTimeFormat("he-IL").format(c.updatedAt)}</bdi></p></article>; })}</div>}
+    <h2 className="mt-16 text-center text-2xl">יעדי התרומה</h2>
+    <ul className="text-column mt-8 divide-y divide-border border-y border-border">{causes.map(c => <li key={c.id} className="flex flex-wrap items-center justify-between gap-4 py-6"><div><h3 className="text-xl">{publicCopy(c.nameHe)}</h3>{c.summary && <p className="mt-2 text-meta text-muted">{publicCopy(c.summary)}</p>}</div><div className="flex items-center gap-4">{hasData && totals.has(c.id) && <bdi>{formatILS(totals.get(c.id)!)}</bdi>}<Link href={`/cause/${c.slug}`} className="inline-flex min-h-11 items-center text-meta text-link">לפרטי היעד</Link></div></li>)}</ul>
+  </div></Section>;
 }

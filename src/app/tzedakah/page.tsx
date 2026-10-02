@@ -22,11 +22,11 @@ export default async function TzedakahPage() {
     <FlowShell
       eyebrow="מסלול"
       title="צדקה"
-      lead="בוחרים מטרה וסכום, ונותנים לפי היכולת. אפשר להישאר אנונימי, ואפשר לתת בסתר."
+      lead="בחירת יעד, סכום ותדירות. אפשר לתרום פעם אחת או מדי חודש, בשמך או בעילום שם."
       aside={
         <Card>
           <CardBody>
-            <h2 className="mb-3 font-display text-lg font-medium">הבסיס ההלכתי</h2>
+            <h2 className="mb-6 font-display text-xl">על פי ההלכה</h2>
             <HalachaNote fundType="tzedakah" />
           </CardBody>
         </Card>

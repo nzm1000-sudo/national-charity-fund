@@ -38,7 +38,7 @@ export function MockCheckout({
     <Card className="mx-auto max-w-md">
       <CardBody>
         <p className="text-sm text-muted">סביבת פיתוח · ספק סליקה לדוגמה</p>
-        <h1 className="mt-2 font-display text-2xl">דף תשלום מאובטח (הדמיה)</h1>
+        <h1 className="mt-2 font-display text-2xl">הדמיית תשלום</h1>
         <p className="mt-2 text-sm text-ink-soft">
           זהו דף סליקה מדומה לפיתוח בלבד. לא מבוצע חיוב אמיתי.
         </p>

@@ -11,8 +11,8 @@ import {
   type OwnerKnown,
   type Reachability,
 } from "@/lib/domain/restitution";
-import { trackClient } from "@/lib/client-analytics";
 import { Card, CardBody, Badge } from "@/components/ui/card";
+import { publicCopy } from "@/components/ui/public-copy";
 
 export function RestitutionWizard({ fund }: { fund: DonationFormFund }) {
   const [answers, setAnswers] = useState<RestitutionAnswers>({
@@ -39,7 +39,6 @@ export function RestitutionWizard({ fund }: { fund: DonationFormFund }) {
   function update(patch: Partial<RestitutionAnswers>) {
     setAnswers((prev) => {
       const next = { ...prev, ...patch };
-      if (prev.ownerKnown === undefined) trackClient("restitution_started");
       return next;
     });
   }
@@ -47,8 +46,8 @@ export function RestitutionWizard({ fund }: { fund: DonationFormFund }) {
   return (
     <div className="space-y-8">
       <p className="flex items-center gap-2 text-sm text-muted">
-        <Badge tone="primary">דיסקרטי</Badge>
-        לא נבקש ממך לתאר מה קרה, ולא נשאל שאלות מיותרות.
+        <Badge tone="primary">מצב צנעה</Badge>
+        אין צורך לפרט מה אירע.
       </p>
 
       {!done && (
@@ -62,7 +61,7 @@ export function RestitutionWizard({ fund }: { fund: DonationFormFund }) {
       {!hasOwner && (
         <ChoiceGroup
           name="ownerKnown"
-          legend="האם ידוע לך למי שייך הכסף?"
+          legend="האם ידוע לך למי שייך הממון?"
           value={null}
           onChange={(v) => {
             setStarted(true);
@@ -71,8 +70,8 @@ export function RestitutionWizard({ fund }: { fund: DonationFormFund }) {
           columns={3}
           options={[
             { value: "yes", label: "כן, ידוע לי", description: "אני יודע למי להשיב" },
-            { value: "no", label: "לא", description: "אין לי מושג ממי" },
-            { value: "unsure", label: "אולי / איני בטוח", description: "יש ספק" },
+            { value: "no", label: "לא", description: "אינני יודע ממי" },
+            { value: "unsure", label: "אינני בטוח", description: "יש ספק" },
           ]}
         />
       )}
@@ -95,7 +94,7 @@ export function RestitutionWizard({ fund }: { fund: DonationFormFund }) {
       {answers.ownerKnown === "no" && answers.manyPeople === undefined && (
         <ChoiceGroup
           name="manyPeople"
-          legend="ממי נלקח הכסף?"
+          legend="ממי נלקח הממון?"
           value={null}
           onChange={(v) => update({ manyPeople: v === "many" })}
           columns={2}
@@ -138,13 +137,13 @@ function Outcome({
       <Card className="border-primary/30">
         <CardBody>
           <Badge tone="primary">השבה ישירה</Badge>
-          <h3 className="mt-3 font-display text-xl">{outcome.headlineHe}</h3>
+          <h3 className="mt-4 font-display text-xl">{publicCopy(outcome.headlineHe)}</h3>
           <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">
-            {outcome.explanationHe}
+            {publicCopy(outcome.explanationHe)}
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
             <ButtonLink href="/faq" variant="secondary">
-              איך מנסחים פנייה מכבדת?
+              לפרטי ההשבה
             </ButtonLink>
           </div>
         </CardBody>
@@ -157,13 +156,12 @@ function Outcome({
       <Card className="border-primary/30">
         <CardBody>
           <Badge tone="primary">המסלול המתאים</Badge>
-          <h3 className="mt-3 font-display text-xl">{outcome.headlineHe}</h3>
+          <h3 className="mt-4 font-display text-xl">{publicCopy(outcome.headlineHe)}</h3>
           <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">
-            {outcome.explanationHe}
+            {publicCopy(outcome.explanationHe)}
           </p>
           <p className="mt-3 text-sm text-muted">
-            אינך זוכר את הסכום המדויק? זה בסדר — אפשר להעריך ולהוסיף מעט מרווח
-            ביטחון. תמיד אפשר לחזור ולעדכן.
+            אם הסכום המדויק אינו זכור, אפשר להעריך אותו ולהוסיף מרווח ביטחון.
           </p>
         </CardBody>
       </Card>

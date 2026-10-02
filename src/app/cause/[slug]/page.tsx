@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { FlowShell } from "@/components/flows/flow-shell";
 import { DonationForm } from "@/components/flows/donation-form";
 import { Card, CardBody } from "@/components/ui/card";
+import { publicCopy } from "@/components/ui/public-copy";
 
 export const revalidate = 300;
 
@@ -43,15 +44,14 @@ export default async function CausePage({
   return (
     <FlowShell
       eyebrow="מטרה"
-      title={cause.nameHe}
-      lead={cause.summary ?? undefined}
+      title={publicCopy(cause.nameHe)}
+      lead={cause.summary ? publicCopy(cause.summary) : undefined}
       aside={
         <Card>
           <CardBody>
             <h2 className="font-display text-lg font-medium">שקיפות</h2>
             <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-              כל שקל שנתרם למטרה זו מתועד. נתוני ההתקדמות מוצגים באזור
-              &quot;לאן הכסף מגיע&quot; — רק נתונים אמיתיים.
+              כל תרומה משויכת ליעד ולכלל הקצאה מתועד. נתוני ההתקדמות מוצגים במרכז השקיפות.
             </p>
           </CardBody>
         </Card>

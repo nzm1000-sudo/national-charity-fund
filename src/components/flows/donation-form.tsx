@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AmountPicker } from "@/components/ui/amount-picker";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import { Field, Input, Textarea, Label } from "@/components/ui/form";
 import { Card, CardBody } from "@/components/ui/card";
 import { IconCheck } from "@/components/icons";
 import { formatILS, parseAmountToAgorot } from "@/lib/money";
-import { trackClient } from "@/lib/client-analytics";
+import { FormStages } from "@/components/ui/form-stages";
 
 export interface DonationFormFund {
   code: string;
@@ -34,7 +34,7 @@ const STATIC_DEMO = process.env.NEXT_PUBLIC_STATIC_DEMO === "1";
 
 export function DonationForm(props: DonationFormProps) {
   return (
-    <Suspense fallback={<div className="h-40 animate-pulse rounded-card bg-surface-2" />}>
+     <Suspense fallback={<div className="h-40 rounded-card bg-surface-2" aria-label="טעינת הטופס" />}>
       <DonationFormInner {...props} />
     </Suspense>
   );
@@ -71,11 +71,6 @@ function DonationFormInner({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
-
-  useEffect(() => {
-    trackClient("donation_started", { fundTypeCode: fund.code }, discreet);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const canSubmit = amount != null && amount >= fund.minAmountAgorot && !submitting;
 
@@ -125,7 +120,7 @@ function DonationFormInner({
         router.push(`/donation/${data.publicId}`);
       }
     } catch {
-      setError("בעיית תקשורת. בדקו את החיבור ונסו שוב — לא חויבתם.");
+      setError("לא ניתן להשלים את הפעולה עקב תקלה בחיבור. אפשר לנסות שוב.");
       setSubmitting(false);
     }
   }
@@ -137,15 +132,14 @@ function DonationFormInner({
           <span className="grid h-12 w-12 place-items-center rounded-full bg-success-soft text-success">
             <IconCheck />
           </span>
-          <h2 className="mt-4 font-display text-2xl">הפעולה הושלמה בהצלחה</h2>
+          <h2 className="mt-4 font-display text-2xl">הדגמת התרומה הושלמה</h2>
           <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">
-            זו תצוגה מקדימה (GitHub Pages) — לא בוצע חיוב אמיתי. באתר החי תועבר/י
-            לסליקה מאובטחת ותופק קבלה.
+            זו תצוגה מקדימה בלבד. לא התקבלה תרומה ולא בוצע חיוב.
           </p>
           <dl className="mt-4 border-t border-border pt-4 text-sm">
             <div className="flex justify-between">
               <dt className="text-muted">סכום</dt>
-              <dd className="font-medium">{amount != null ? formatILS(amount) : "—"}</dd>
+              <dd className="num">{amount != null ? formatILS(amount) : "לא נבחר סכום"}</dd>
             </div>
           </dl>
           <Button variant="secondary" className="mt-4" onClick={() => setDone(false)}>
@@ -164,10 +158,12 @@ function DonationFormInner({
         void submit();
       }}
     >
+      <FormStages labels={["בחירת הסכום", "בחירת היעד", "פרטים וסיכום"]}>
+      <div>
       {/* Amount */}
       <section aria-labelledby="amount-heading">
         <h2 id="amount-heading" className="font-display text-lg font-medium">
-          בחירת סכום
+          {showPidyon ? "סכום הפדיון" : "סכום"}
         </h2>
         <div className="mt-4">
           <AmountPicker
@@ -180,23 +176,25 @@ function DonationFormInner({
       </section>
 
       {showMaaserCalc && <MaaserHelper onApply={setAmount} />}
+      </div>
+      <div>
 
       {/* Cause */}
       {showCause && fund.destinations.length > 0 && (
         <section aria-labelledby="cause-heading">
           <h2 id="cause-heading" className="font-display text-lg font-medium">
-            לאן תופנה התרומה
+            יעד התרומה
           </h2>
           <p className="mt-1 text-sm text-muted">
-            אפשר לבחור מטרה, ואפשר להניח לנו להפנות למקום הדחוף ביותר.
+            בחירת היעד נעשית מתוך היעדים המותרים לקופה זו.
           </p>
           <div className="mt-3">
-            <Label htmlFor="cause">מטרה</Label>
+            <Label htmlFor="cause">יעד התרומה</Label>
             <select
               id="cause"
               value={causeId}
               onChange={(e) => setCauseId(e.target.value)}
-              className="mt-1.5 block w-full rounded-md border border-border-strong bg-surface px-3.5 py-3 text-[15px] focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="mt-2 block w-full rounded-card border border-border-strong bg-surface px-4 py-3 text-base"
             >
               {fund.destinations.map((d) => (
                 <option key={d.causeId} value={d.causeId}>
@@ -215,21 +213,25 @@ function DonationFormInner({
             פרטי הפדיון
           </h2>
           <p className="mt-1 text-sm text-muted">
-            אפשר למלא שם ושם אם — לצורך הנוסח. אין חובה. המידע נשמר רק לצורך הפדיון.
+            אפשר לציין את שם האדם ואת שם אמו לצורך הבקשה. השדות אינם חובה.
           </p>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            <Field label="שם" htmlFor="p-name">
+            <Field label="שם האדם" htmlFor="p-name">
               <Input id="p-name" value={pName} onChange={(e) => setPName(e.target.value)} maxLength={120} />
             </Field>
             <Field label="שם האם" htmlFor="p-mother">
               <Input id="p-mother" value={pMother} onChange={(e) => setPMother(e.target.value)} maxLength={120} />
             </Field>
           </div>
-          <Field label="בקשה (רשות)" htmlFor="p-request" className="mt-4">
+          <Field label="מטרת הבקשה" htmlFor="p-request" className="mt-4">
             <Textarea id="p-request" value={pRequest} onChange={(e) => setPRequest(e.target.value)} maxLength={300} placeholder="למשל: לרפואה שלמה, לזיווג, לפרנסה…" />
           </Field>
         </section>
       )}
+
+      {!showCause && !showPidyon && <p>הממון מיועד לקופת צרכי רבים, בהתאם למסלול ההשבה שנבחר.</p>}
+      </div>
+      <div>
 
       {/* Details */}
       <section aria-labelledby="details-heading">
@@ -249,9 +251,9 @@ function DonationFormInner({
               className="mt-1 h-4 w-4 accent-[var(--color-primary)]"
             />
             <span>
-              <span className="block font-medium text-ink">מצב דיסקרטי</span>
+              <span className="block font-medium text-ink">מצב צנעה</span>
               <span className="mt-0.5 block text-sm text-muted">
-                ללא analytics וללא cookies שיווקיים. נשמור רק את הנדרש לסליקה ולקבלה.
+                ללא מעקב וללא עוגיות שיווקיות. נשמר רק המידע ההכרחי לביצוע הפעולה.
               </span>
             </span>
           </label>
@@ -265,9 +267,9 @@ function DonationFormInner({
                 className="mt-1 h-4 w-4 accent-[var(--color-primary)]"
               />
               <span>
-                <span className="block font-medium text-ink">תרומה אנונימית</span>
+                <span className="block font-medium text-ink">תרומה בעילום שם</span>
                 <span className="mt-0.5 block text-sm text-muted">
-                  לא נציג את שמך. אם נדרשת קבלה — נבקש רק את הפרטים ההכרחיים.
+                  השם לא יוצג. ככל שנדרשת קבלה, יידרשו רק הפרטים ההכרחיים.
                 </span>
               </span>
             </label>
@@ -281,7 +283,7 @@ function DonationFormInner({
                 <Input id="d-name" value={name} onChange={(e) => setName(e.target.value)} maxLength={120} autoComplete="name" />
               </Field>
             )}
-            <Field label={fund.receiptRequired ? "אימייל (לקבלה)" : "אימייל (רשות)"} htmlFor="d-email">
+            <Field label={fund.receiptRequired ? "דואר אלקטרוני (לקבלה)" : "דואר אלקטרוני (רשות)"} htmlFor="d-email">
               <Input id="d-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} maxLength={160} autoComplete="email" />
             </Field>
             <Field label="טלפון (רשות)" htmlFor="d-phone">
@@ -301,11 +303,11 @@ function DonationFormInner({
       </section>
 
       {/* Summary + submit */}
-      <section className="rounded-card border border-border bg-surface p-5">
-        <div className="flex items-center justify-between text-[15px]">
-          <span className="text-ink-soft">סכום לתשלום</span>
-          <span className="font-display text-xl">
-            {amount != null ? formatILS(amount) : "—"}
+      <section className="rounded-card border border-border bg-surface p-8">
+        <div className="flex flex-wrap items-center justify-between gap-4 text-meta">
+          <span className="text-ink-soft">סכום התרומה</span>
+          <span className="num text-xl">
+            {amount != null ? formatILS(amount) : "לא נבחר סכום"}
           </span>
         </div>
         {error && (
@@ -314,12 +316,14 @@ function DonationFormInner({
           </p>
         )}
         <Button type="submit" size="lg" fullWidth className="mt-4" disabled={!canSubmit}>
-          {submitting ? "מעביר/ה לתשלום…" : "מעבר לתשלום מאובטח"}
+          {submitting ? "התרומה בתהליך אישור" : "אישור התרומה"}
         </Button>
         <p className="mt-2 text-center text-xs text-muted">
-          לא נשמרים פרטי כרטיס. הסליקה מתבצעת בדף מאובטח של ספק הסליקה.
+          לא נשמרים מספר כרטיס מלא או קוד האימות שלו. בתצוגה המקדימה אין חיוב.
         </p>
       </section>
+      </div>
+      </FormStages>
     </form>
   );
 }
@@ -346,10 +350,10 @@ function MaaserHelper({ onApply }: { onApply: (agorot: number) => void }) {
         מחשבון מעשר (רשות)
       </h2>
       <p className="mt-1 text-sm text-muted">
-        עשירית מההכנסה, לפי מנהג. אפשר לנכות הוצאות — הכלל ניתן לשינוי.
+        החישוב מבוסס על ההכנסות וההוצאות המוזנות, בהתאם לכלל הקיים במערכת.
       </p>
       <div className="mt-4 grid gap-4 sm:grid-cols-3">
-        <Field label="הכנסה" htmlFor="m-income">
+        <Field label="הכנסה חודשית" htmlFor="m-income">
           <Input id="m-income" inputMode="decimal" value={income} onChange={(e) => setIncome(e.target.value)} placeholder="₪" />
         </Field>
         <Field label="הוצאות (רשות)" htmlFor="m-expenses">
@@ -359,11 +363,11 @@ function MaaserHelper({ onApply }: { onApply: (agorot: number) => void }) {
           <Input id="m-other" inputMode="decimal" value={other} onChange={(e) => setOther(e.target.value)} placeholder="₪" />
         </Field>
       </div>
-      <div className="mt-4 flex items-center justify-between">
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
         <span className="text-sm text-ink-soft">
-          מעשר מוצע:{" "}
-          <span className="font-medium text-ink">
-            {suggested > 0 ? formatILS(suggested) : "—"}
+          מעשר:{" "}
+          <span className="num block text-3xl text-ink">
+            {suggested > 0 ? formatILS(suggested) : "לא הוזנה הכנסה"}
           </span>
         </span>
         <Button
@@ -373,9 +377,10 @@ function MaaserHelper({ onApply }: { onApply: (agorot: number) => void }) {
           disabled={suggested <= 0}
           onClick={() => onApply(suggested)}
         >
-          החל/י סכום זה
+          בחירת הסכום המחושב
         </Button>
       </div>
+      <p className="mt-6 text-meta">חומש: <bdi className="block text-3xl">{suggested > 0 ? formatILS(suggested * 2) : "לא הוזנה הכנסה"}</bdi></p>
     </section>
   );
 }

@@ -22,11 +22,11 @@ export default async function MaaserPage() {
     <FlowShell
       eyebrow="מסלול"
       title="מעשר כספים"
-      lead="נהוג להפריש עשירית מההכנסה. אפשר לחשב לפי הכנסות ולהישאר עם מטרה קבועה."
+      lead="הפרשת מעשר מן ההכנסה, חישוב מדויק ומעקב לאורך השנה."
       aside={
         <Card>
           <CardBody>
-            <h2 className="mb-3 font-display text-lg font-medium">הבסיס ההלכתי</h2>
+            <h2 className="mb-6 font-display text-xl">על פי ההלכה</h2>
             <HalachaNote fundType="maaser" />
           </CardBody>
         </Card>

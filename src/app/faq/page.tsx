@@ -3,18 +3,19 @@ import { prisma } from "@/lib/prisma";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { Disclosure } from "@/components/ui/disclosure";
 import { ButtonLink } from "@/components/ui/button";
+import { publicCopy } from "@/components/ui/public-copy";
 
 export const revalidate = 600;
 
 export const metadata: Metadata = {
-  title: "שאלות נפוצות",
+  title: "שאלות ותשובות",
   description:
     "שאלות שאנשים באמת שואלים על השבת ממון, צדקה, מעשר ופדיון נפש — בפתיחות ובפשטות.",
 };
 
 const CATEGORY_LABELS: Record<string, string> = {
   restitution: "השבת ממון",
-  privacy: "פרטיות ודיסקרטיות",
+  privacy: "פרטיות וצנעה",
   maaser: "מעשר כספים",
   public_needs: "צרכי רבים",
   pidyon: "פדיון נפש",
@@ -38,13 +39,13 @@ export default async function FaqPage() {
     "@type": "FAQPage",
     mainEntity: faqs.map((f) => ({
       "@type": "Question",
-      name: f.question,
-      acceptedAnswer: { "@type": "Answer", text: f.answer },
+      name: publicCopy(f.question),
+      acceptedAnswer: { "@type": "Answer", text: publicCopy(f.answer) },
     })),
   };
 
   return (
-    <Section className="pt-10">
+    <Section>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -52,21 +53,21 @@ export default async function FaqPage() {
       <div className="container-page max-w-3xl">
         <SectionHeading
           rule
-          eyebrow="רוצה להבין לפני?"
-          title="שאלות נפוצות"
-          lead="ריכזנו את השאלות שאנשים חוששים לשאול — בלי שיפוטיות."
+            eyebrow="מקורות והכוונה"
+            title="שאלות ותשובות"
+            lead="התשובות מבוססות על מקורות הלכתיים מתועדים. במקרה אישי מורכב יש להתייעץ עם רב פוסק."
         />
 
         <div className="mt-10 space-y-10">
           {Object.entries(groups).map(([category, items]) => (
             <div key={category}>
-              <h2 className="mb-2 font-display text-xl">
+              <h2 className="mb-6 text-center font-display text-xl">
                 {CATEGORY_LABELS[category] ?? category}
               </h2>
               <div className="border-t border-border">
                 {items.map((f) => (
-                  <Disclosure key={f.id} summary={f.question}>
-                    {f.answer}
+                  <Disclosure key={f.id} summary={publicCopy(f.question)}>
+                    {publicCopy(f.answer)}
                   </Disclosure>
                 ))}
               </div>
@@ -75,7 +76,7 @@ export default async function FaqPage() {
         </div>
 
         <div className="mt-12 rounded-card border border-primary/20 bg-primary-tint p-6">
-          <h2 className="font-display text-xl">לא מצאת תשובה?</h2>
+          <h2 className="font-display text-xl">להכוונה נוספת</h2>
           <p className="mt-2 text-sm text-ink-soft">
             אפשר לפנות אלינו, ואפשר גם להתייעץ עם רב במקרה אישי מורכב.
           </p>

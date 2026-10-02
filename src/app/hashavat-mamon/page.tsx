@@ -21,13 +21,13 @@ export default async function HashavatMamonPage() {
 
   return (
     <FlowShell
-      eyebrow="המסלול המרכזי"
+      eyebrow="מסלול להשבה"
       title="השבת ממון"
-      lead="יש כסף שאינך יודע למי להשיב? נברר יחד, בשקט, את הדרך הנכונה — בלי שתצטרך לספר מה קרה."
+      lead="מי שבידו ממון שאינו שלו, ואינו יודע כיצד להשיבו, ימצא כאן דרך מסודרת. השאלות קצרות, ואין צורך לפרט מה אירע."
       aside={
         <Card>
           <CardBody>
-            <h2 className="mb-3 font-display text-lg font-medium">הבסיס ההלכתי</h2>
+            <h2 className="mb-6 font-display text-xl">על פי ההלכה</h2>
             <HalachaNote fundType="restitution" />
           </CardBody>
         </Card>

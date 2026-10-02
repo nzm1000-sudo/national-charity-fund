@@ -21,13 +21,13 @@ export default async function PublicNeedsPage() {
 
   return (
     <FlowShell
-      eyebrow="קטגוריה נפרדת"
+      eyebrow="קופה נפרדת"
       title="צרכי רבים"
-      lead="לא אותה קטגוריה כמו צדקה. מדובר במיזמים מתמשכים שהציבור נהנה מהם — ולכן מתאימים גם להשבת ממון שאין לו בעלים ידועים. ההשבה נעשית בדיסקרטיות."
+      lead="מפעלים שהציבור כולו נהנה מהם. היעד שקבעו חכמים לממון שבעליו אינם ידועים."
       aside={
         <Card>
           <CardBody>
-            <h2 className="mb-3 font-display text-lg font-medium">הבסיס ההלכתי</h2>
+            <h2 className="mb-6 font-display text-xl">על פי ההלכה</h2>
             <HalachaNote fundType="public_needs" />
           </CardBody>
         </Card>

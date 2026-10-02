@@ -11,8 +11,8 @@ export default function GlobalError({
       <body
         style={{
           fontFamily: "system-ui, sans-serif",
-          background: "#f6f3ea",
-          color: "#1a1814",
+          background: "#fdfbf6",
+          color: "#241e17",
           display: "grid",
           placeItems: "center",
           minHeight: "100dvh",
@@ -23,15 +23,16 @@ export default function GlobalError({
       >
         <div>
           <h1 style={{ fontSize: "1.5rem" }}>תקלה זמנית</h1>
-          <p style={{ color: "#454034" }}>אנא נסו לרענן את הדף.</p>
+          <p style={{ color: "#5f5648" }}>אפשר לנסות לטעון את הדף מחדש.</p>
           <button
             onClick={reset}
             style={{
               marginTop: "1rem",
-              background: "#0f4c46",
+              background: "#241e17",
               color: "#fff",
               border: 0,
-              borderRadius: "10px",
+              borderRadius: "4px",
+              minHeight: "44px",
               padding: "0.75rem 1.5rem",
               cursor: "pointer",
               fontSize: "1rem",

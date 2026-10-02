@@ -4,6 +4,7 @@ import { HALACHIC_DISCLAIMER_HE } from "@/lib/domain/halachic-rules-data";
 import { prisma } from "@/lib/prisma";
 import { Disclosure } from "@/components/ui/disclosure";
 import { Badge } from "@/components/ui/card";
+import { publicCopy } from "@/components/ui/public-copy";
 
 /**
  * Public-facing halachic note for a fund type: one calm explanation, with the
@@ -39,7 +40,7 @@ export async function HalachaNote({
   return (
     <div className="not-prose">
       <p className="text-[15px] leading-relaxed text-ink-soft">
-        {rule.publicExplanation}
+        {publicCopy(rule.publicExplanation)}
       </p>
       <Disclosure summary="להסבר נוסף ולמקורות" className="mt-3">
         <div className="space-y-3">
@@ -56,11 +57,11 @@ export async function HalachaNote({
                 <li key={s.code} className="text-sm">
                   <p className="font-medium text-ink">
                     {src.title}
-                    {src.work ? ` — ${src.work}` : ""}
+                    {src.work ? `, ${src.work}` : ""}
                     {src.citation ? `, ${src.citation}` : ""}
                   </p>
                   {src.quote && (
-                    <p className="mt-1 border-s-2 border-gold/60 ps-3 italic text-ink-soft">
+                    <p className="mt-4 border-s border-border-strong ps-4 text-ink-soft">
                       „{src.quote}”
                     </p>
                   )}
@@ -82,7 +83,7 @@ export async function HalachaNote({
             })}
           </ul>
           <p className="border-t border-border pt-3 text-xs text-muted">
-            {HALACHIC_DISCLAIMER_HE}
+            {publicCopy(HALACHIC_DISCLAIMER_HE)}
           </p>
         </div>
       </Disclosure>
