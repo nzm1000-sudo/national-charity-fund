@@ -6,6 +6,8 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import "./globals.css";
 
+const assetPath = process.env.STATIC_EXPORT === "1" ? process.env.PAGES_BASE_PATH || "" : "";
+
 export const metadata: Metadata = {
   metadataBase: new URL(env.APP_URL),
   title: {
@@ -15,6 +17,19 @@ export const metadata: Metadata = {
   description:
     "הכתובת להשבת ממון, לצרכי רבים, למעשר כספים, לצדקה ולפדיון נפש. בצנעה, בשקיפות ועל פי ההלכה.",
   applicationName: "הקופה הלאומית",
+  appleWebApp: {
+    capable: true,
+    title: "הקופה הלאומית",
+    statusBarStyle: "default",
+  },
+  icons: {
+    icon: [
+      { url: `${assetPath}/app-icon-192.png`, sizes: "192x192", type: "image/png" },
+      { url: `${assetPath}/app-icon-512.png`, sizes: "512x512", type: "image/png" },
+    ],
+    apple: { url: `${assetPath}/apple-touch-icon.png`, sizes: "180x180", type: "image/png" },
+  },
+  other: { "apple-mobile-web-app-capable": "yes" },
   openGraph: {
     type: "website",
     locale: "he_IL",
