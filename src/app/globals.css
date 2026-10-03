@@ -418,6 +418,7 @@
 main :is(h1, h2, h3, h4, h5, h6) { text-align: center; font-weight: 400; }
 main p { text-align: center; margin-inline: auto; }
 main strong, main :is(.font-bold, .font-semibold) { font-weight: 500; }
+main .hero-privacy strong { font-weight: 700; }
 main :is(h1, h2, h3, h4, h5, h6):is(.font-bold, .font-semibold, .font-medium) { font-weight: 400; }
 main article { text-align: center; }
 .track-card > a { justify-content: center; gap: 10px; }
