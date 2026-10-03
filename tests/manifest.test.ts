@@ -18,6 +18,7 @@ describe("home-screen installation manifest", () => {
     for (const icon of config.icons ?? []) {
       expect(icon.src.startsWith(root)).toBe(true);
       expect(icon.type).toBe("image/png");
+      expect(icon.src).toContain("/fund-icon-");
     }
   });
 

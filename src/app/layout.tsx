@@ -24,12 +24,12 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: `${assetPath}/favicon-48.png`, sizes: "48x48", type: "image/png" },
-      { url: `${assetPath}/app-icon-192.png`, sizes: "192x192", type: "image/png" },
-      { url: `${assetPath}/app-icon-512.png`, sizes: "512x512", type: "image/png" },
+      { url: `${assetPath}/fund-favicon-48.png`, sizes: "48x48", type: "image/png" },
+      { url: `${assetPath}/fund-icon-192.png`, sizes: "192x192", type: "image/png" },
+      { url: `${assetPath}/fund-icon-512.png`, sizes: "512x512", type: "image/png" },
     ],
-    shortcut: `${assetPath}/favicon-48.png`,
-    apple: { url: `${assetPath}/apple-touch-icon-v2.png`, sizes: "180x180", type: "image/png" },
+    shortcut: `${assetPath}/fund-favicon-48.png`,
+    apple: { url: `${assetPath}/fund-apple-touch-icon.png`, sizes: "180x180", type: "image/png" },
   },
   other: { "apple-mobile-web-app-capable": "yes" },
   openGraph: {
