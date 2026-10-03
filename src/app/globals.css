@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+@property --header-light-a { syntax: "<color>"; inherits: false; initial-value: #cceeff; }
+@property --header-light-b { syntax: "<color>"; inherits: false; initial-value: #bde5fb; }
+
 @layer components {
   .payment-section { border-top: 1px solid var(--color-border); background: var(--color-surface-2); }
   .payment-method-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; align-items: stretch; }
@@ -109,11 +112,17 @@
 @layer components {
   .site-header { position: relative; background: var(--color-bg); }
   .header-row { position: relative; isolation: isolate; background: linear-gradient(180deg, #f6fbff, var(--color-bg)); min-height: 74px; display: grid; grid-template-columns: minmax(76px, 1fr) minmax(0, 2fr) minmax(76px, 1fr); align-items: center; gap: 6px; padding-block: 8px; }
-  .header-row::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(110deg, transparent 10%, #cceeff99 36%, #ffffffb3 49%, #bde5fb80 62%, transparent 85%); background-size: 220% 100%; background-position: 50% 50%; animation: header-light-drift 24s ease-in-out infinite alternate; }
-  .header-row::after { content: ""; position: absolute; inset-inline: 12%; bottom: 0; height: 1px; pointer-events: none; background: linear-gradient(90deg, transparent, #d9bb72 35%, #8dc9e1 65%, transparent); }
+  .header-row::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(110deg, transparent 10%, color-mix(in srgb, var(--header-light-a) 60%, transparent) 36%, #ffffffb3 49%, color-mix(in srgb, var(--header-light-b) 50%, transparent) 62%, transparent 85%); background-size: 220% 100%; background-position: 50% 50%; animation: header-light-drift 24s ease-in-out infinite alternate, header-light-colors 96s ease-in-out infinite; }
+  .header-row::after { content: ""; position: absolute; inset: 0; border: 2px solid #b99346; border-radius: 0; pointer-events: none; }
   [data-theme="dark"] .header-row { background: linear-gradient(180deg, #172721, var(--color-bg)); }
-  [data-theme="dark"] .header-row::before { background-image: linear-gradient(110deg, transparent 10%, #23628540 36%, #8dc9e118 49%, #317daa35 62%, transparent 85%); }
+  [data-theme="dark"] .header-row::before { opacity: .18; }
   @keyframes header-light-drift { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
+  @keyframes header-light-colors {
+    0%, 100% { --header-light-a: #cceeff; --header-light-b: #bde5fb; }
+    25% { --header-light-a: #d7efdf; --header-light-b: #c6e9df; }
+    50% { --header-light-a: #f7e2ca; --header-light-b: #f4d9cc; }
+    75% { --header-light-a: #f4dde5; --header-light-b: #e8e4f4; }
+  }
   .header-row > a { min-width: 0; }
   .header-brand { grid-column: 2; grid-row: 1; display: grid; justify-items: center; line-height: 1.15; text-align: center; }
   .header-brand strong { font: 400 calc(19px * var(--text-scale, 1))/1.15 var(--font-display); }
