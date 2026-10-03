@@ -108,7 +108,12 @@
 
 @layer components {
   .site-header { position: relative; background: var(--color-bg); }
-  .header-row { min-height: 74px; display: grid; grid-template-columns: minmax(76px, 1fr) minmax(0, 2fr) minmax(76px, 1fr); align-items: center; gap: 6px; padding-block: 8px; }
+  .header-row { position: relative; isolation: isolate; background: linear-gradient(180deg, #f6fbff, var(--color-bg)); min-height: 74px; display: grid; grid-template-columns: minmax(76px, 1fr) minmax(0, 2fr) minmax(76px, 1fr); align-items: center; gap: 6px; padding-block: 8px; }
+  .header-row::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(110deg, transparent 10%, #cceeff99 36%, #ffffffb3 49%, #bde5fb80 62%, transparent 85%); background-size: 220% 100%; background-position: 50% 50%; animation: header-light-drift 24s ease-in-out infinite alternate; }
+  .header-row::after { content: ""; position: absolute; inset-inline: 12%; bottom: 0; height: 1px; pointer-events: none; background: linear-gradient(90deg, transparent, #d9bb72 35%, #8dc9e1 65%, transparent); }
+  [data-theme="dark"] .header-row { background: linear-gradient(180deg, #172721, var(--color-bg)); }
+  [data-theme="dark"] .header-row::before { background-image: linear-gradient(110deg, transparent 10%, #23628540 36%, #8dc9e118 49%, #317daa35 62%, transparent 85%); }
+  @keyframes header-light-drift { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
   .header-row > a { min-width: 0; }
   .header-brand { grid-column: 2; grid-row: 1; display: grid; justify-items: center; line-height: 1.15; text-align: center; }
   .header-brand strong { font: 400 calc(19px * var(--text-scale, 1))/1.15 var(--font-display); }
