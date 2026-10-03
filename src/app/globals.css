@@ -294,33 +294,36 @@
     .hero-eyebrow { font-size: calc(20.8px * var(--text-scale, 1)); }
     .giving-hero h1 { font-size: calc(42px * var(--text-scale, 1)); }
     .giving-hero h1 > span { font-size: calc(34px * var(--text-scale, 1)); }
-    .hero-lead { font-size: calc(16px * var(--text-scale, 1)); max-width: 400px; }
+    .hero-lead { font-size: calc(18px * var(--text-scale, 1)); max-width: 400px; }
     .hero-actions .institution-button { padding-inline: 18px; font-size: calc(14px * var(--text-scale, 1)); }
-    .hero-privacy { font-size: calc(11px * var(--text-scale, 1)); }
+    .hero-privacy { font-size: calc(13px * var(--text-scale, 1)); }
     .photo-caption { bottom: 8px; left: 12px; font-size: calc(9px * var(--text-scale, 1)); }
     .trust-ribbon > div { padding-inline: 12px; padding-block: 17px; }
-    .trust-ribbon span { flex-direction: column; gap: 6px; text-align: center; font-size: calc(10px * var(--text-scale, 1)); line-height: 1.5; }
+    .trust-ribbon span { flex-direction: column; gap: 6px; text-align: center; font-size: calc(12px * var(--text-scale, 1)); line-height: 1.5; }
     .home-section { padding-block: 56px; }
     .home-heading h2, .giving-copy h2, .faq-layout h2 { font-size: calc(34px * var(--text-scale, 1)); }
-    .home-heading > p:last-child { font-size: calc(14px * var(--text-scale, 1)); }
+    .home-heading > p:last-child { font-size: calc(16px * var(--text-scale, 1)); }
     .home-heading { margin-bottom: 28px; }
     .track-grid { gap: 12px; }
     .track-card { padding: 20px 16px 16px; }
     .track-card h3 { font-size: calc(31.25px * var(--text-scale, 1)); }
-    .track-kicker { font-size: calc(10px * var(--text-scale, 1)); }
-    .track-body { font-size: calc(12px * var(--text-scale, 1)); }
+    .track-kicker { font-size: calc(12px * var(--text-scale, 1)); }
+    .track-body { font-size: calc(16px * var(--text-scale, 1)); }
     .track-top { margin-bottom: 20px; }
-    .track-footnote { font-size: calc(11px * var(--text-scale, 1)); }
+    .track-footnote { font-size: calc(13px * var(--text-scale, 1)); }
     .giving-band { padding-block: 48px; }
     .giving-layout, .impact-layout, .faq-layout { grid-template-columns: 1fr; gap: 28px; }
     .giving-copy { text-align: center; }
-    .giving-copy > p:not(.eyebrow) { margin-inline: auto; font-size: calc(14px * var(--text-scale, 1)); }
+    .giving-copy > p:not(.eyebrow) { margin-inline: auto; font-size: calc(16px * var(--text-scale, 1)); }
     .quick-donation { padding: 22px; }
+    .quick-donation-heading p { font-size: calc(14px * var(--text-scale, 1)); }
+    .quick-donation-action label { font-size: calc(13px * var(--text-scale, 1)); }
     .quick-donation-action { grid-template-columns: 1fr 1.45fr; gap: 12px; }
     .quick-amounts button { font-size: calc(14px * var(--text-scale, 1)); }
     .quick-donation-action .institution-button { font-size: calc(12px * var(--text-scale, 1)); }
     .quick-donation h2 { font-size: calc(23px * var(--text-scale, 1)); }
-    .quick-note { font-size: calc(10px * var(--text-scale, 1)); }
+    .quick-note { font-size: calc(13px * var(--text-scale, 1)); }
+    .public-needs-note p, .transparency-grid p, .faq-layout > div > p:not(.eyebrow) { font-size: calc(16px * var(--text-scale, 1)); }
     .impact-photo { min-height: 240px; }
     .impact-destinations > div { padding: 20px; }
     .public-needs-note { flex-wrap: wrap; gap: 16px; }
