@@ -48,7 +48,10 @@ export function SiteHeader() {
           <strong>הקופה הלאומית</strong>
           <small className="header-tagline">להשיב, לתת ולתקן</small>
         </Link>
-        <button ref={toggleRef} type="button" aria-label={open ? "סגירת תפריט" : "פתיחת תפריט"} title={open ? "סגירת תפריט" : "פתיחת תפריט"} aria-expanded={open} aria-controls="mobile-nav" onClick={() => setOpen(!open)} className="privacy-control menu-toggle">{open ? <X size={18} /> : <Menu size={18} />}</button>
+        <div className="header-controls">
+          <button ref={toggleRef} type="button" aria-label={open ? "סגירת תפריט" : "פתיחת תפריט"} title={open ? "סגירת תפריט" : "פתיחת תפריט"} aria-expanded={open} aria-controls="mobile-nav" onClick={() => setOpen(!open)} className="privacy-control menu-toggle">{open ? <X size={18} /> : <Menu size={18} />}</button>
+          <ThemeToggle compact />
+        </div>
         <nav aria-label="ניווט ראשי" className="desktop-nav">
           <ul className="flex items-center gap-4">{NAV.map(([href, label]) => <li key={href}><Link href={href} aria-current={pathname === href ? "page" : undefined} className="site-nav-link">{label}</Link></li>)}</ul>
         </nav>
