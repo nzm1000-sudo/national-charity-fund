@@ -7,7 +7,7 @@ export const organization = {
     { display: "058-5555530", href: "tel:0585555530" },
     { display: "053-5470052", href: "tel:0535470052" },
   ],
-  paymentUrl: "https://www.matara.pro/nedarimplus/online/?mosad=5776132",
+  paymentUrl: "https://www.matara.pro/nedarimplus/online/?S=VQoV",
   bank: { name: "מזרחי טפחות", branch: "428", account: "294319" },
   projectUrl: "https://nzm1000-sudo.github.io/kezohar-2/",
   taxNote: "הארגון מפרסם הכרה לפי סעיף 46. הזכאות לזיכוי תלויה בסוג התשלום ובדין; לקבלת קבלה ולבירור הזכאות יש לפנות לארגון. אין לראות בכל השבת ממון תרומה המזכה במס.",
