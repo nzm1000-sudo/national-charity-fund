@@ -53,7 +53,7 @@ function restore() {
 // Derive Pages URL + base path (project pages live at /<repo>).
 const ghRepo = process.env.GITHUB_REPOSITORY || "nzm1000-sudo/national-charity-fund";
 const [owner, repo] = ghRepo.split("/");
-const basePath = process.env.PAGES_BASE_PATH || `/${repo}`;
+const basePath = process.env.PAGES_BASE_PATH ?? `/${repo}`;
 const appUrl = process.env.PAGES_APP_URL || `https://${owner}.github.io${basePath}`;
 
 process.env.STATIC_EXPORT = "1";

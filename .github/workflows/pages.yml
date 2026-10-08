@@ -29,6 +29,8 @@ jobs:
         run: npm run build:pages
         env:
           GITHUB_REPOSITORY: ${{ github.repository }}
+          PAGES_BASE_PATH: ""
+          PAGES_APP_URL: https://national-charity-fund.nizoza.com
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
