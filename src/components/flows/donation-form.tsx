@@ -5,10 +5,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { AmountPicker } from "@/components/ui/amount-picker";
 import { Button } from "@/components/ui/button";
 import { Field, Input, Textarea, Label } from "@/components/ui/form";
-import { Card, CardBody } from "@/components/ui/card";
-import { IconCheck } from "@/components/icons";
 import { formatILS, parseAmountToAgorot } from "@/lib/money";
 import { FormStages } from "@/components/ui/form-stages";
+import { organization } from "@/lib/organization";
 
 export interface DonationFormFund {
   code: string;
@@ -75,7 +74,6 @@ function DonationFormInner({
   const [pRequest, setPRequest] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [done, setDone] = useState(false);
 
   const canSubmit = amount != null && amount >= fund.minAmountAgorot && !submitting;
 
@@ -85,9 +83,18 @@ function DonationFormInner({
     setError(null);
 
     if (STATIC_DEMO) {
-      // Static GitHub Pages preview: no server, so we show the completion state.
-      setSubmitting(false);
-      setDone(true);
+      // Static GitHub Pages build has no server: the real payment happens on the organization's Nedarim Plus donation page.
+      const destination = showCause ? fund.destinations.find((d) => d.causeId === causeId)?.nameHe : undefined;
+      const pidyon = showPidyon && (pName || pRequest)
+        ? `פדיון נפש: ${[pName, pMother && `בן/בת ${pMother}`].filter(Boolean).join(" ")}${pRequest ? ` — ${pRequest}` : ""}`
+        : "";
+      const note = [fund.nameHe, destination, pidyon, designation, dedication].filter(Boolean).join(" · ");
+      const handoff = new URLSearchParams({ amount: String(Math.round(amount / 100)) });
+      if (!anonymous && name.trim()) handoff.set("name", name.trim());
+      if (phone.trim()) handoff.set("phone", phone.trim());
+      if (email.trim()) handoff.set("mail", email.trim());
+      if (note) handoff.set("comment", note.slice(0, 250));
+      window.location.href = `${organization.paymentUrl}#${handoff}`;
       return;
     }
 
@@ -128,31 +135,6 @@ function DonationFormInner({
       setError("לא ניתן להשלים את הפעולה עקב תקלה בחיבור. אפשר לנסות שוב.");
       setSubmitting(false);
     }
-  }
-
-  if (done) {
-    return (
-      <Card className="border-success/40">
-        <CardBody>
-          <span className="grid h-12 w-12 place-items-center rounded-full bg-success-soft text-success">
-            <IconCheck />
-          </span>
-          <h2 className="mt-4 font-display text-2xl">הדגמת התרומה הושלמה</h2>
-          <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">
-            זו תצוגה מקדימה בלבד. לא התקבלה תרומה ולא בוצע חיוב.
-          </p>
-          <dl className="mt-4 border-t border-border pt-4 text-sm">
-            <div className="flex justify-between">
-              <dt className="text-muted">סכום</dt>
-              <dd className="num">{amount != null ? formatILS(amount) : "לא נבחר סכום"}</dd>
-            </div>
-          </dl>
-          <Button variant="secondary" className="mt-4" onClick={() => setDone(false)}>
-            חזרה לטופס
-          </Button>
-        </CardBody>
-      </Card>
-    );
   }
 
   return (
@@ -321,10 +303,12 @@ function DonationFormInner({
           </p>
         )}
         <Button type="submit" size="lg" fullWidth className="mt-4" disabled={!canSubmit}>
-          {submitting ? "התרומה בתהליך אישור" : "אישור התרומה"}
+          {submitting ? "מעבר לתשלום…" : STATIC_DEMO ? "המשך לתשלום מאובטח" : "אישור התרומה"}
         </Button>
         <p className="mt-2 text-center text-xs text-muted">
-          לא נשמרים מספר כרטיס מלא או קוד האימות שלו. בתצוגה המקדימה אין חיוב.
+          {STATIC_DEMO
+            ? "התשלום יושלם בדף התרומה המאובטח של הארגון (נדרים פלוס), עם הסכום והפרטים שמילאתם."
+            : "לא נשמרים מספר כרטיס מלא או קוד האימות שלו."}
         </p>
       </section>
       </div>
